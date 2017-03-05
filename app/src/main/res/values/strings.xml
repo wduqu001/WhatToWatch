@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">WhatToWatch</string>
-    <string name="error_message">An error has occurred. Please try again by clicking REFRESH</string>
+    <string name="error_message">An error has occurred. Please try again</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

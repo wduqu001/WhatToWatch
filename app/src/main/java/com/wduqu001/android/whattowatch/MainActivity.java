@@ -8,13 +8,14 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler{
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
-
     private TextView mErrorMessageDisplay;
-
     private ProgressBar mLoadingIndicator;
 
     @Override
@@ -23,29 +24,34 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         setContentView(R.layout.activity_main);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
-
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
+        // TODO: fill the list of movies
+        List<Movie> mMovies =  new ArrayList<>();
+        mMovies.add(0,new Movie(String.valueOf(438026),
+                "Sherlock: The Lying Detective",
+                "/e8In8IS1fzCJ8OlISe4z9zk857B.jpg",
+                "/5IDyICd5k1JQbAlhSMN64yU4Wkk.jpg"
+        ));
+        mMovies.add(1,new Movie(String.valueOf(324552),
+                "John Wick: Chapter 2",
+                "/xUidyvYFsbbuExifLkslpcd8SMc.jpg",
+                "/4TBLjAhQe1zJfR3zdHMWTrwbdLd.jpg"
+        ));
 
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        mMovieAdapter = new MovieAdapter(this);
-
+        mMovieAdapter = new MovieAdapter(this, mMovies);
         mRecyclerView.setAdapter(mMovieAdapter);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false);
+        //GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(layoutManager);
 
         /*
          * The ProgressBar that will indicate to the user that we are loading data. It will be
          * hidden when no data is loading.
          */
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-    }
-
-    @Override
-    public void onClick(String movieData) {
-
+        showMovieDataView();
     }
 
     private void showMovieDataView() {

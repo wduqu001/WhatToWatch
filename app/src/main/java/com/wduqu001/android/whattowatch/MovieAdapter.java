@@ -1,30 +1,29 @@
 package com.wduqu001.android.whattowatch;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
-    private String[] mMovieData;
+    private static final String TAG = MovieAdapter.class.getSimpleName();
 
-    /*
-     * An on-click handler that we've defined to make it easy for an Activity to interface with
-     * our RecyclerView
-     */
-    private final MovieAdapterOnClickHandler mClickHandler;
+    private List<Movie> mMovies;
+    private Context mContext;
+    private MovieAdapterOnClickHandler mClickHandler;
 
-    /**
-     * Creates a MovieAdapter.
-     *
-     * @param clickHandler The on-click handler for this adapter. This single handler is called
-     *                     when an item is clicked.
-     */
-    public MovieAdapter(MovieAdapterOnClickHandler clickHandler) {
-        mClickHandler = clickHandler;
+    public MovieAdapter(Context context, List<Movie> movies) {
+        mContext = context;
+        mMovies = movies;
     }
 
     /**
@@ -32,13 +31,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      * is laid out.
      */
     @Override
-    public MovieAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.movies_list_item;
+    public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        int layoutIdForListItem = R.layout.movies_item;
         LayoutInflater inflater = LayoutInflater.from(context);
         boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
         return new MovieAdapterViewHolder(view);
     }
     /**
@@ -47,8 +46,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
-        String movieItemData = mMovieData[position];
-
+        Movie movie = mMovies.get(position);
+        final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w185";
+        Uri posterUri = Uri.parse(TMDB_IMG_URL + movie.getmPosterPath()).normalizeScheme();
+            Picasso.with(holder.mMovieImageView.getContext())
+                    .load(posterUri)
+                    .fit()
+                    .into(holder.mMovieImageView);
+        Log.d(TAG, "help");
     }
 
     /**
@@ -56,17 +61,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public int getItemCount() {
-        if(mMovieData == null) return 0;
-
-        return mMovieData.length;
+        if(mMovies == null){
+            return  0;
+        }
+        return mMovies.size();
     }
 
-    public void setmMovieData(String[] mMovieData) {
-        this.mMovieData = mMovieData;
-    }
-
+    // TODO: change it, sending the movieData instead of the ImageView
     public interface MovieAdapterOnClickHandler {
-        void onClick(String weatherForDay);
+        void onClick(View view, int position);
     }
 
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -74,8 +77,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         public MovieAdapterViewHolder(View view) {
             super(view);
-            mMovieImageView = (ImageView) view.findViewById(R.id.img_movie);
-            view.setOnClickListener(this);
+            mMovieImageView = (ImageView) view.findViewById(R.id.img_view_movie);
+            //view.setOnClickListener(this);
         }
 
         /**
@@ -84,8 +87,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            String movieItem = mMovieData[adapterPosition];
-            mClickHandler.onClick(movieItem);
+            mClickHandler.onClick(view, adapterPosition);
         }
 
     }
