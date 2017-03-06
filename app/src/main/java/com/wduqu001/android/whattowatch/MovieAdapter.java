@@ -3,7 +3,6 @@ package com.wduqu001.android.whattowatch;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +20,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private Context mContext;
     private MovieAdapterOnClickHandler mClickHandler;
 
-    public MovieAdapter(Context context, List<Movie> movies) {
+    public MovieAdapter(Context context) {
         mContext = context;
-        mMovies = movies;
+    }
+
+    public void setmMovies(List<Movie> mMovies) {
+        this.mMovies = mMovies;
     }
 
     /**
@@ -40,6 +42,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
         return new MovieAdapterViewHolder(view);
     }
+
     /**
      * OnBindViewHolder is called by the RecyclerView to display the data at the specified
      * position.
@@ -48,12 +51,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
         Movie movie = mMovies.get(position);
         final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w185";
-        Uri posterUri = Uri.parse(TMDB_IMG_URL + movie.getmPosterPath()).normalizeScheme();
-            Picasso.with(holder.mMovieImageView.getContext())
-                    .load(posterUri)
-                    .fit()
-                    .into(holder.mMovieImageView);
-        Log.d(TAG, "help");
+        Uri posterUri = Uri.parse(TMDB_IMG_URL + movie.getPosterPath()).normalizeScheme();
+        Picasso.with(holder.mMovieImageView.getContext())
+                .load(posterUri)
+                .fit()
+                .into(holder.mMovieImageView);
     }
 
     /**
@@ -61,8 +63,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public int getItemCount() {
-        if(mMovies == null){
-            return  0;
+        if (mMovies == null) {
+            return 0;
         }
         return mMovies.size();
     }

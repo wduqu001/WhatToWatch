@@ -1,5 +1,6 @@
 package com.wduqu001.android.whattowatch;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,15 +9,20 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.json.JSONException;
+
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
+    private List<Movie> mMovies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,46 +31,68 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
+        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        // TODO: fill the list of movies
-        List<Movie> mMovies =  new ArrayList<>();
-        mMovies.add(0,new Movie(String.valueOf(438026),
-                "Sherlock: The Lying Detective",
-                "/e8In8IS1fzCJ8OlISe4z9zk857B.jpg",
-                "/5IDyICd5k1JQbAlhSMN64yU4Wkk.jpg"
-        ));
-        mMovies.add(1,new Movie(String.valueOf(324552),
-                "John Wick: Chapter 2",
-                "/xUidyvYFsbbuExifLkslpcd8SMc.jpg",
-                "/4TBLjAhQe1zJfR3zdHMWTrwbdLd.jpg"
-        ));
-
-        mMovieAdapter = new MovieAdapter(this, mMovies);
-        mRecyclerView.setAdapter(mMovieAdapter);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         //GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        /*
-         * The ProgressBar that will indicate to the user that we are loading data. It will be
-         * hidden when no data is loading.
-         */
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-        showMovieDataView();
+        mMovieAdapter = new MovieAdapter(MainActivity.this);
+        mRecyclerView.setAdapter(mMovieAdapter);
+        loadMovieList();
     }
 
     private void showMovieDataView() {
-        /* First, make sure the error is invisible */
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        /* Then, make sure the weather data is visible */
         mRecyclerView.setVisibility(View.VISIBLE);
     }
 
     private void showErrorMessage() {
-        /* First, hide the currently visible data */
         mRecyclerView.setVisibility(View.INVISIBLE);
-        /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
+    }
+
+    // TODO: Implement a way to choose how the movie list is sorted
+    private void loadMovieList() {
+        boolean sortByPopularity = true;
+        URL url = NetworkUtils.buildUrl(sortByPopularity);
+        new QueryTask().execute(url);
+    }
+
+    public class QueryTask extends AsyncTask<URL, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingIndicator.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String doInBackground(URL... params) {
+            URL url = params[0];
+            String moviesApiResult = null;
+            try {
+                moviesApiResult = NetworkUtils.getResponseFromHttpUrl(url);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return moviesApiResult;
+        }
+
+        @Override
+        protected void onPostExecute(String moviesApiResult) {
+            mLoadingIndicator.setVisibility(View.INVISIBLE);
+            if (moviesApiResult != null && !moviesApiResult.equals("")) {
+                showMovieDataView();
+                try {
+                    mMovies = NetworkUtils.getMoviesList(moviesApiResult);
+                    mMovieAdapter.setmMovies(mMovies);
+                    mMovieAdapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                showErrorMessage();
+            }
+        }
     }
 }
