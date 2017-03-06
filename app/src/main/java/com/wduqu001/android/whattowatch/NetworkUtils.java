@@ -21,7 +21,7 @@ public class NetworkUtils {
     private final static String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w185";
     private final static String TMDB_POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
     private final static String TMDB_POPULAR_ASC_URL = "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.asc";
-    private final static String TMDB_API_KEY = "";
+    private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
     private final static String LANGUAGE = Locale.getDefault().getLanguage();
     private final static int PAGES = 1;
 

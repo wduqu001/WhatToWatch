@@ -1,10 +1,23 @@
+
+# ignore Idea artifacts
+/.idea/
+.idea/misc.xml
 *.iml
+*.ipr
+*.iws
+
+# ignore Eclipse artifacts
+/.classpath
+/.project
+/.settings
+
+# ignore things created by the build
+/build/
+/.gradle
 .gradle
+/gradle.properties
+
 /local.properties
-/.idea/workspace.xml
-/.idea/libraries
 .DS_Store
-/build
 /captures
 .externalNativeBuild
-.idea/misc.xml
