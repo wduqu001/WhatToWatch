@@ -15,6 +15,7 @@
         android:layout_height="match_parent"
         android:layout_columnWeight="1"
         android:layout_rowWeight="1"
-        android:contentDescription="@string/movie_poster" />
+        android:contentDescription="@string/movie_poster"
+        android:src="@android:drawable/ic_menu_report_image"/>
 
 </GridLayout>

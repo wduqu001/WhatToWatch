@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_sort_asc"
+        android:orderInCategory="1"
+        android:icon="@android:drawable/arrow_up_float"
+        android:title="@string/sort_asc"/>
+    <item
+        android:id="@+id/action_sort_desc"
+        android:orderInCategory="2"
+        android:icon="@android:drawable/arrow_down_float"
+        android:title="@string/sort_desc"/>
+</menu>

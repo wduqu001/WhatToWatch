@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -18,6 +21,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    final boolean ASCENDING = false;
+    final boolean DESCENDING = true;
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessageDisplay;
@@ -40,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
         mMovieAdapter = new MovieAdapter(MainActivity.this);
         mRecyclerView.setAdapter(mMovieAdapter);
-        loadMovieList();
+
+        loadPopularMovieList(DESCENDING);
     }
 
     private void showMovieDataView() {
@@ -53,11 +59,41 @@ public class MainActivity extends AppCompatActivity {
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    // TODO: Implement a way to choose how the movie list is sorted
-    private void loadMovieList() {
-        boolean sortByPopularity = true;
-        URL url = NetworkUtils.buildUrl(sortByPopularity);
+    /**
+     * Builds url and executes QueryTask loading a list of movies from the TMDB api.
+     * @param order Choose from one of the available sort options. (Ascending, Descending)
+       default: DESCENDING
+     */
+    private void loadPopularMovieList(boolean order) {
+        URL url = NetworkUtils.buildPopularMoviesUrl(order);
         new QueryTask().execute(url);
+    }
+
+    /**
+     * Initialize the contents of the Activity's standard options menu.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        // return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_sort_asc) {
+            loadPopularMovieList(ASCENDING);
+            return true;
+        }
+        if (id == R.id.action_sort_desc) {
+            loadPopularMovieList(DESCENDING);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private class QueryTask extends AsyncTask<URL, Void, String> {
@@ -67,6 +103,11 @@ public class MainActivity extends AppCompatActivity {
             mLoadingIndicator.setVisibility(View.VISIBLE);
         }
 
+        /**
+         * Override this method to perform a computation on a background thread. The
+         * specified parameters are the parameters passed to {@link #execute}
+         * by the caller of this task.
+         */
         @Override
         protected String doInBackground(URL... params) {
             URL url = params[0];
@@ -79,6 +120,10 @@ public class MainActivity extends AppCompatActivity {
             return moviesApiResult;
         }
 
+        /**
+         * Runs on the UI thread after {@link #doInBackground}.
+         * The specified result is the value returned by {@link #doInBackground}.
+         */
         @Override
         protected void onPostExecute(String moviesApiResult) {
             mLoadingIndicator.setVisibility(View.INVISIBLE);

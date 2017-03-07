@@ -7,23 +7,24 @@ package com.wduqu001.android.whattowatch;
 public class Movie {
     private static final String TAG = Movie.class.getSimpleName();
 
-    private String mMoviedId;
+    private String mMovieId;
     private String mTitle;
     private String mPosterPath;
     private String mBackdropPath;
-    private double mVote_average;
+    private double mVoteAverage;
     private String mOverview;
-    private String mRelease_date;
+    private String mReleaseDate;
+    private String mOriginalTitle;
 
     public Movie(String moviedId, String title, String posterPath, String backdropPath) {
-        this.mMoviedId = moviedId;
+        this.mMovieId = moviedId;
         this.mTitle = title;
         this.mPosterPath = posterPath;
         this.mBackdropPath = backdropPath;
     }
 
-    public String getMoviedId() {
-        return mMoviedId;
+    public String getMovieId() {
+        return mMovieId;
     }
 
     public String getTitle() {
@@ -39,11 +40,11 @@ public class Movie {
     }
 
     public double getVote_average() {
-        return mVote_average;
+        return mVoteAverage;
     }
 
     public void setVote_average(double vote_average) {
-        this.mVote_average = vote_average;
+        this.mVoteAverage = vote_average;
     }
 
     public String getOverview() {
@@ -55,10 +56,18 @@ public class Movie {
     }
 
     public String getRelease_date() {
-        return mRelease_date;
+        return mReleaseDate;
     }
 
     public void setRelease_date(String release_date) {
-        this.mRelease_date = release_date;
+        this.mReleaseDate = release_date;
+    }
+
+    public String getOriginalTitle() {
+        return mOriginalTitle;
+    }
+
+    public void setOriginalTitle(String originalTitle) {
+        this.mOriginalTitle = originalTitle;
     }
 }

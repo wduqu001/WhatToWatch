@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">WhatToWatch</string>
-    <string name="error_message">An error has occurred. Please try again</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_message">An error has occurred. Check Your Connection and Try Again</string>
     <string name="movie_poster">Movie poster</string>
+    <string name="sort_asc">Ascending</string>
+    <string name="sort_desc">Descending</string>
 </resources>

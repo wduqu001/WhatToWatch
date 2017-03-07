@@ -20,14 +20,19 @@ public class NetworkUtils {
 
     private final static String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w185";
     private final static String TMDB_POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
-    private final static String TMDB_POPULAR_ASC_URL = "http://api.themoviedb.org/3/discover/movie?sort_by=popularity.asc";
+    private final static String TMDB_DISCOVER_POPULAR_URL = "http://api.themoviedb.org/3/discover/movie";
     private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
     private final static String LANGUAGE = Locale.getDefault().getLanguage();
     private final static int PAGES = 1;
 
-    // TODO: Add sorting method
-    public static URL buildUrl(boolean sortByPopularity) {
-        Uri builtUri = Uri.parse(TMDB_POPULAR_MOVIES_URL).buildUpon()
+    // TODO: Add method description
+    static URL buildPopularMoviesUrl(boolean descendingOrder) {
+        String order = "popularity.desc";
+
+        if (!descendingOrder) order = "popularity.asc";
+
+        Uri builtUri = Uri.parse(TMDB_DISCOVER_POPULAR_URL).buildUpon()
+                .appendQueryParameter("sort_by", order)
                 .appendQueryParameter("api_key", TMDB_API_KEY)
                 .appendQueryParameter("language", LANGUAGE)
                 .appendQueryParameter("page", Integer.toString(PAGES))
@@ -42,7 +47,8 @@ public class NetworkUtils {
         return url;
     }
 
-    public static String getResponseFromHttpUrl(URL url) throws IOException {
+    // TODO: Add method description
+    static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
             InputStream in = urlConnection.getInputStream();
@@ -61,7 +67,8 @@ public class NetworkUtils {
         }
     }
 
-    public static List<Movie> getMoviesList(String StringParam) throws JSONException {
+    // TODO: Add method description
+    static List<Movie> getMoviesList(String StringParam) throws JSONException {
 
         JSONArray moviesArray = new JSONObject(StringParam).getJSONArray("results");
 
@@ -81,6 +88,7 @@ public class NetworkUtils {
                         movieData.getString("poster_path"),
                         movieData.getString("backdrop_path")
                 );
+                movie.setOriginalTitle(movieData.getString("original_title"));
                 movie.setOverview(movieData.getString("overview"));
                 movie.setVote_average(movieData.getDouble("vote_average"));
                 movie.setRelease_date(movieData.getString("release_date"));
