@@ -1,9 +1,10 @@
 package com.wduqu001.android.whattowatch;
 
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import org.json.JSONException;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,20 +22,21 @@ public class MainActivity extends AppCompatActivity {
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
-    private List<Movie> mMovies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_forecast);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
         mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        //GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(layoutManager);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        } else {
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        }
 
         mMovieAdapter = new MovieAdapter(MainActivity.this);
         mRecyclerView.setAdapter(mMovieAdapter);
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             if (moviesApiResult != null && !moviesApiResult.equals("")) {
                 showMovieDataView();
                 try {
-                    mMovies = NetworkUtils.getMoviesList(moviesApiResult);
+                    List<Movie> mMovies = NetworkUtils.getMoviesList(moviesApiResult);
                     mMovieAdapter.setmMovies(mMovies);
                     mMovieAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
