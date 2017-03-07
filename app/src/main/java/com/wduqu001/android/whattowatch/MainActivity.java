@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         new QueryTask().execute(url);
     }
 
-    public class QueryTask extends AsyncTask<URL, Void, String> {
+    private class QueryTask extends AsyncTask<URL, Void, String> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
