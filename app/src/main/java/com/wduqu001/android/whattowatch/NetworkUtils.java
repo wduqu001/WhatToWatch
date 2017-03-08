@@ -1,6 +1,7 @@
 package com.wduqu001.android.whattowatch;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,7 +10,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +30,7 @@ public class NetworkUtils {
     private final static int PAGES = 1;
 
     // TODO: Add method description
-    static URL buildPopularMoviesUrl(boolean descendingOrder) {
+    static URL buildPopularMoviesUrl(boolean descendingOrder) throws MalformedURLException {
         String order = "popularity.desc";
 
         if (!descendingOrder) order = "popularity.asc";
@@ -38,13 +42,7 @@ public class NetworkUtils {
                 .appendQueryParameter("page", Integer.toString(PAGES))
                 .build();
 
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        return url;
+        return new URL(builtUri.toString());
     }
 
     // TODO: Add method description
@@ -78,27 +76,49 @@ public class NetworkUtils {
         List<Movie> movieList = new ArrayList<>();
 
         for (int i = 0; i < moviesArray.length(); i++) {
-            JSONObject movieData;
-            movieData = moviesArray.getJSONObject(i);
+            JSONObject movieData = moviesArray.getJSONObject(i);
 
             try {
-                Movie movie = new Movie(
-                        String.valueOf(movieData.getInt("id")),
-                        movieData.getString("title"),
-                        movieData.getString("poster_path"),
-                        movieData.getString("backdrop_path")
-                );
-                movie.setOriginalTitle(movieData.getString("original_title"));
-                movie.setOverview(movieData.getString("overview"));
-                movie.setVote_average(movieData.getDouble("vote_average"));
-                movie.setRelease_date(movieData.getString("release_date"));
-
+                Movie movie = getMovieFromJson(movieData);
                 movieList.add(i, movie);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
         return movieList;
+    }
+
+    @NonNull
+    private static Movie getMovieFromJson(JSONObject movieData) throws JSONException {
+        Movie movie = new Movie(
+                String.valueOf(movieData.getInt("id")),
+                movieData.getString("title"),
+                movieData.getString("poster_path"),
+                movieData.getString("backdrop_path")
+        );
+        movie.setOriginalTitle(movieData.getString("original_title"));
+        movie.setOverview(movieData.getString("overview"));
+        movie.setVote_average(movieData.getDouble("vote_average"));
+        movie.setRelease_date(movieData.getString("release_date"));
+        return movie;
+    }
+
+    /**
+     * Checks for internet connection.
+     * Method based on solution available at http://stackoverflow.com/a/27312494/5988277
+     * @return false if internet connection is not available
+     */
+    public static boolean isOnline() {
+        try {
+            int timeoutMs = 1500;
+            Socket sock = new Socket();
+            SocketAddress sockaddr = new InetSocketAddress("themoviedb.org", 80);
+
+            sock.connect(sockaddr, timeoutMs);
+            sock.close();
+
+            return true;
+        } catch (IOException e) { return false; }
     }
 
 }

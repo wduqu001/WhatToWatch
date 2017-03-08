@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import org.json.JSONException;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -65,7 +66,13 @@ public class MainActivity extends AppCompatActivity {
        default: DESCENDING
      */
     private void loadPopularMovieList(boolean order) {
-        URL url = NetworkUtils.buildPopularMoviesUrl(order);
+        URL url = null;
+        try {
+            url = NetworkUtils.buildPopularMoviesUrl(order);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            showErrorMessage();
+        }
         new QueryTask().execute(url);
     }
 
@@ -113,9 +120,12 @@ public class MainActivity extends AppCompatActivity {
             URL url = params[0];
             String moviesApiResult = null;
             try {
-                moviesApiResult = NetworkUtils.getResponseFromHttpUrl(url);
+                if(NetworkUtils.isOnline()) {
+                    moviesApiResult = NetworkUtils.getResponseFromHttpUrl(url);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
+                showErrorMessage();
             }
             return moviesApiResult;
         }
