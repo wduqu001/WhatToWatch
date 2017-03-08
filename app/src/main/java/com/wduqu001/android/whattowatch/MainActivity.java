@@ -1,5 +1,7 @@
 package com.wduqu001.android.whattowatch;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,7 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     final boolean ASCENDING = false;
@@ -44,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         }
 
-        mMovieAdapter = new MovieAdapter(MainActivity.this);
+        mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
         loadPopularMovieList(DESCENDING);
@@ -101,6 +103,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view, Movie movie) {
+        Context context = this;
+        Class destinationActivity = MovieDetail.class;
+
+        Intent intent = new Intent(context, destinationActivity);
+        intent.putExtra("movie", movie);
+        startActivity(intent);
     }
 
     private class QueryTask extends AsyncTask<URL, Void, String> {

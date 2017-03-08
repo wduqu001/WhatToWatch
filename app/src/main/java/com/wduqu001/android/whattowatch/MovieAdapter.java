@@ -1,7 +1,7 @@
 package com.wduqu001.android.whattowatch;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,14 +18,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private List<Movie> mMovies;
-    private Context mContext;
     private MovieAdapterOnClickHandler mClickHandler;
 
-    public MovieAdapter(Context context) {
-        mContext = context;
+    MovieAdapter(Activity activity) {
+        mClickHandler = (MovieAdapterOnClickHandler) activity;
     }
 
-    public void setmMovies(List<Movie> mMovies) {
+    void setmMovies(List<Movie> mMovies) {
         this.mMovies = mMovies;
     }
 
@@ -71,7 +70,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     interface MovieAdapterOnClickHandler {
-        void onClick(View view, int position);
+        void onClick(View view, Movie movie);
     }
 
     class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -80,7 +79,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         MovieAdapterViewHolder(View view) {
             super(view);
             mMovieImageView = (ImageView) view.findViewById(R.id.img_view_movie);
-            //view.setOnClickListener(this);
+            view.setOnClickListener(this);
         }
 
         /**
@@ -89,11 +88,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            mClickHandler.onClick(view, adapterPosition);
-            Class destinationActivity = MovieDetail.class;
-            Intent startDetailActivityIntent = new Intent(mContext, destinationActivity);
-            // TODO: implement Parcelable
-            //startDetailActivityIntent.putExtra("name_of_extra", myParcelableObject);
+            mClickHandler.onClick(view, mMovies.get(adapterPosition));
         }
     }
 }
