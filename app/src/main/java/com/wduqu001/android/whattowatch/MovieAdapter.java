@@ -1,6 +1,7 @@
 package com.wduqu001.android.whattowatch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -69,15 +70,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return mMovies.size();
     }
 
-    // TODO: change it, sending the movieData instead of the ImageView
-    public interface MovieAdapterOnClickHandler {
+    interface MovieAdapterOnClickHandler {
         void onClick(View view, int position);
     }
 
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView mMovieImageView;
 
-        public MovieAdapterViewHolder(View view) {
+        MovieAdapterViewHolder(View view) {
             super(view);
             mMovieImageView = (ImageView) view.findViewById(R.id.img_view_movie);
             //view.setOnClickListener(this);
@@ -90,7 +90,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
             mClickHandler.onClick(view, adapterPosition);
+            Class destinationActivity = MovieDetail.class;
+            Intent startDetailActivityIntent = new Intent(mContext, destinationActivity);
+            // TODO: implement Parcelable
+            //startDetailActivityIntent.putExtra("name_of_extra", myParcelableObject);
         }
-
     }
 }

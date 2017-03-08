@@ -16,6 +16,7 @@ public class Movie {
     private String mReleaseDate;
     private String mOriginalTitle;
 
+    // TODO: implement Parcelable
     public Movie(String moviedId, String title, String posterPath, String backdropPath) {
         this.mMovieId = moviedId;
         this.mTitle = title;
