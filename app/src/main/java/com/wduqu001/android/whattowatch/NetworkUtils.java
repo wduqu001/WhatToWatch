@@ -29,7 +29,12 @@ public class NetworkUtils {
     private final static String LANGUAGE = Locale.getDefault().getLanguage();
     private final static int PAGES = 1;
 
-    // TODO: Add method description
+    /**
+     * * Builds a url for PopularMovies
+     * @param descendingOrder If the list of movies should be in descendingOrder
+     * @return a new url for the tmdb api
+     * @throws MalformedURLException
+     */
     static URL buildPopularMoviesUrl(boolean descendingOrder) throws MalformedURLException {
         String order = "popularity.desc";
 
@@ -45,7 +50,6 @@ public class NetworkUtils {
         return new URL(builtUri.toString());
     }
 
-    // TODO: Add method description
     static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
         try {
@@ -65,7 +69,12 @@ public class NetworkUtils {
         }
     }
 
-    // TODO: Add method description
+    /**
+     * Builds a object of type List<Movie> from a String ( resulted from a http request)
+     * @param StringParam
+     * @return A list of Movies
+     * @throws JSONException
+     */
     static List<Movie> getMoviesList(String StringParam) throws JSONException {
 
         JSONArray moviesArray = new JSONObject(StringParam).getJSONArray("results");
@@ -88,6 +97,12 @@ public class NetworkUtils {
         return movieList;
     }
 
+    /**
+     * Creates a Movie object from JSON
+     * @param movieData JSONObject from with Movie will be extracted
+     * @return Movie
+     * @throws JSONException
+     */
     @NonNull
     private static Movie getMovieFromJson(JSONObject movieData) throws JSONException {
         Movie movie = new Movie(
@@ -109,13 +124,12 @@ public class NetworkUtils {
      * @return false if internet connection is not available
      */
     public static boolean isOnline() {
+        int timeoutMs = 1500;
+        Socket socket = new Socket();
         try {
-            int timeoutMs = 1500;
-            Socket sock = new Socket();
-            SocketAddress sockaddr = new InetSocketAddress("themoviedb.org", 80);
-
-            sock.connect(sockaddr, timeoutMs);
-            sock.close();
+            SocketAddress socketAddress = new InetSocketAddress("themoviedb.org", 80);
+            socket.connect(socketAddress, timeoutMs);
+            socket.close();
 
             return true;
         } catch (IOException e) { return false; }

@@ -24,7 +24,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         mClickHandler = (MovieAdapterOnClickHandler) activity;
     }
 
-    void setmMovies(List<Movie> mMovies) {
+    void setMovies(List<Movie> mMovies) {
         this.mMovies = mMovies;
     }
 

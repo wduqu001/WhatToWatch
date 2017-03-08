@@ -115,6 +115,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         startActivity(intent);
     }
 
+    /**
+     * Task responsive for Querying the api for movie data
+     */
     private class QueryTask extends AsyncTask<URL, Void, String> {
         @Override
         protected void onPreExecute() {
@@ -153,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 showMovieDataView();
                 try {
                     List<Movie> mMovies = NetworkUtils.getMoviesList(moviesApiResult);
-                    mMovieAdapter.setmMovies(mMovies);
+                    mMovieAdapter.setMovies(mMovies);
                     mMovieAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
