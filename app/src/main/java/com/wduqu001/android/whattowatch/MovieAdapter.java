@@ -13,6 +13,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
@@ -76,11 +79,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final ImageView mMovieImageView;
-
+        @BindView(R.id.img_view_movie) ImageView mMovieImageView;
         MovieAdapterViewHolder(View view) {
             super(view);
-            mMovieImageView = (ImageView) view.findViewById(R.id.img_view_movie);
+            ButterKnife.bind(this, view);
             view.setOnClickListener(this);
         }
 

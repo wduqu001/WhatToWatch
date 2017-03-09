@@ -8,20 +8,25 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieDetail extends AppCompatActivity {
 
     private final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
+
+    // Automatically finds each field by the specified ID.
+    @BindView(R.id.img_thumbnail) ImageView mThumbnail;
+    @BindView(R.id.tv_title) TextView mTitle;
+    @BindView(R.id.tv_yearOfRelease) TextView mYearOfRelease;
+    @BindView(R.id.rb_voteAverage) RatingBar mRating;
+    @BindView(R.id.tv_overview) TextView mOverview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-
-        ImageView mThumbnail = (ImageView) findViewById(R.id.img_thumbnail);
-        TextView mTitle = (TextView) findViewById(R.id.tv_title);
-        TextView mYearOfRelease = (TextView) findViewById(R.id.tv_yearOfRelease);
-        RatingBar mRating = (RatingBar) findViewById(R.id.rb_voteAverage);
-        TextView mOverview = (TextView) findViewById(R.id.tv_overview);
+        ButterKnife.bind(this);
 
         Movie movie = getIntent().getParcelableExtra("movie");
         Picasso.with(this)

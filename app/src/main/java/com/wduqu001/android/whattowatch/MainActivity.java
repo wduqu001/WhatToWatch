@@ -18,34 +18,38 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     final int POPULAR_MOVIES = 0;
     final int TOP_RATED = 1;
-    private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mLoadingIndicator;
+
+    @BindView(R.id.recyclerview_movies)
+    RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display)
+    TextView mErrorMessageDisplay;
+    @BindView(R.id.pb_loading_indicator)
+    ProgressBar mLoadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
-        mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
-        mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns()));
+        ButterKnife.bind(this);
 
         mMovieAdapter = new MovieAdapter(this);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns()));
         mRecyclerView.setAdapter(mMovieAdapter);
 
         loadMovieList(POPULAR_MOVIES);
     }
 
     /**
-     *  Dynamically calculate the number of columns
+     * Dynamically calculate the number of columns
+     *
      * @return number of columns
      */
     private int numberOfColumns() {
@@ -76,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      * Builds url and executes QueryTask loading a list of movies from the TMDB api.
      *
      * @param option Choose from one of the available options. (TOP_RATED, POPULAR_MOVIES)
-     *              default: POPULAR_MOVIES
+     *               default: POPULAR_MOVIES
      */
     private void loadMovieList(int option) {
         URL url = null;
