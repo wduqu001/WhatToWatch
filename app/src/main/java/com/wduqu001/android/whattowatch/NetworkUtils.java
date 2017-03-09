@@ -2,6 +2,7 @@ package com.wduqu001.android.whattowatch;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +23,6 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
-    private final static String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w185";
     private final static String TMDB_POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
     private final static String TMDB_DISCOVER_POPULAR_URL = "http://api.themoviedb.org/3/discover/movie";
     private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
@@ -133,7 +133,7 @@ public class NetworkUtils {
      * @return false if internet connection is not available
      */
     public static boolean isOnline() {
-        int timeoutMs = 1500;
+        int timeoutMs = 3000;
         Socket socket = new Socket();
         try {
             SocketAddress socketAddress = new InetSocketAddress("themoviedb.org", 80);
@@ -142,8 +142,8 @@ public class NetworkUtils {
 
             return true;
         } catch (IOException e) {
+            Log.e("isOnline", "failed to connect to themoviedb.org (port 80) after 3000ms");
             return false;
         }
     }
-
 }

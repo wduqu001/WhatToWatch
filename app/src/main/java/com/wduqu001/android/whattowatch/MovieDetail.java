@@ -10,7 +10,7 @@ import com.squareup.picasso.Picasso;
 
 public class MovieDetail extends AppCompatActivity {
 
-    final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
+    private final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

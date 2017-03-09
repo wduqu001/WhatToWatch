@@ -20,17 +20,17 @@ public class Movie implements Parcelable {
             return new Movie[size];
         }
     };
-    private String mMovieId;
-    private String mTitle;
-    private String mPosterPath;
-    private String mBackdropPath;
+    private final String mMovieId;
+    private final String mTitle;
+    private final String mPosterPath;
+    private final String mBackdropPath;
     private double mVoteAverage;
     private String mOverview;
     private String mReleaseDate;
     private String mOriginalTitle;
 
-    Movie(String moviedId, String title, String posterPath, String backdropPath) {
-        this.mMovieId = moviedId;
+    Movie(String movieId, String title, String posterPath, String backdropPath) {
+        this.mMovieId = movieId;
         this.mTitle = title;
         this.mPosterPath = posterPath;
         this.mBackdropPath = backdropPath;
@@ -69,10 +69,6 @@ public class Movie implements Parcelable {
         dest.writeString(mOverview);
         dest.writeString(mReleaseDate);
         dest.writeString(mOriginalTitle);
-    }
-
-    public String getMovieId() {
-        return mMovieId;
     }
 
     public String getTitle() {

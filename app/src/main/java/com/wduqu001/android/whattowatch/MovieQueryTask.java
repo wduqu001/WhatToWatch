@@ -1,10 +1,5 @@
 package com.wduqu001.android.whattowatch;
 
-/**
- * Created by willian on 3/8/17.
- */
-
-import android.content.Context;
 import android.os.AsyncTask;
 
 import java.net.URL;
@@ -14,18 +9,11 @@ import java.util.List;
  * Task responsive for Querying the api for movie data
  */
 public class MovieQueryTask extends AsyncTask<URL, Void, List<Movie>> {
-    private final Context mContext;
     private final QueryTaskCompleteListener<List<Movie>> mTaskCompleteListener;
 
 
-    public MovieQueryTask(Context context, MainActivity.TaskCompleteListener listener) {
-        this.mContext = context;
+    public MovieQueryTask(MainActivity.TaskCompleteListener listener) {
         this.mTaskCompleteListener = listener;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
     }
 
     /**

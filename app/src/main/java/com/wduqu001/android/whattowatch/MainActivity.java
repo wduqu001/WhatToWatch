@@ -20,7 +20,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
     final boolean ASCENDING = false;
     final boolean DESCENDING = true;
     private RecyclerView mRecyclerView;
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private int numberOfColumns() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int widthDivider = 342;
+        int widthDivider = 352;
         int width = displayMetrics.widthPixels;
         int nColumns = width / widthDivider;
         if (nColumns < 2) return 2;
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             showErrorMessage();
         }
         showLoading(View.VISIBLE);
-        new MovieQueryTask(this, new TaskCompleteListener()).execute(url);
+        new MovieQueryTask(new TaskCompleteListener()).execute(url);
     }
 
     /**

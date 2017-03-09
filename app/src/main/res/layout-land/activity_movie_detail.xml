@@ -7,86 +7,77 @@
     tools:context="com.wduqu001.android.whattowatch.MovieDetail">
 
     <ScrollView
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintLeft_creator="1"
-        app:layout_constraintHorizontal_bias="0.0"
-        tools:layout_editor_absoluteY="0dp">
+        app:layout_constraintHorizontal_bias="0.0">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/img_thumbnail"
                 android:layout_width="0dp"
-                android:layout_height="151dp"
+                android:layout_height="180dp"
                 android:background="@android:color/background_dark"
                 android:contentDescription="@string/movie_thumbnail"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@android:drawable/stat_notify_error"
-                tools:layout_constraintLeft_creator="1"
-                tools:layout_constraintRight_creator="1" />
+                app:srcCompat="@android:drawable/stat_notify_error" />
 
             <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
+                android:id="@+id/tv_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="@string/overview"
-                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textSize="15sp"
-                android:textStyle="bold"
+                android:textSize="14sp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rb_voteAverage" />
+                app:layout_constraintTop_toBottomOf="@+id/img_thumbnail"
+                tools:text="Doctor Strange"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:id="@+id/tv_yearOfRelease"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_title"
+                app:layout_constraintTop_toBottomOf="@+id/img_thumbnail"
+                tools:text="2017"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp" />
 
             <RatingBar
                 android:id="@+id/rb_voteAverage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:clickable="false"
                 android:isIndicator="true"
                 android:numStars="5"
-                app:layout_constraintHorizontal_bias="0.504"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_title"
-                tools:layout_constraintLeft_creator="1"
-                tools:layout_constraintRight_creator="1"
-                tools:rating="4.5" />
+                tools:rating="4.5"
+                android:layout_marginTop="8dp" />
 
             <TextView
-                android:id="@+id/tv_yearOfRelease"
-                android:layout_width="wrap_content"
+                android:id="@+id/textView5"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:textSize="14sp"
-                app:layout_constraintLeft_toRightOf="@+id/tv_title"
-                app:layout_constraintTop_toBottomOf="@+id/img_thumbnail"
-                tools:text="2017" />
-
-            <TextView
-                android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:textSize="14sp"
+                android:text="@string/overview"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textSize="15sp"
+                android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_thumbnail"
-                tools:text="Doctor Strange" />
+                app:layout_constraintTop_toBottomOf="@+id/rb_voteAverage"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp" />
 
             <TextView
                 android:id="@+id/tv_overview"
@@ -94,6 +85,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/not_available"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5"
@@ -101,19 +93,19 @@
                 tools:text="@string/sample_long_text"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp" />
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp" />
 
             <android.support.constraint.Guideline
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 app:layout_constraintGuide_begin="20dp"
-                tools:layout_editor_absoluteX="20dp"
-                tools:layout_editor_absoluteY="89dp" />
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="19dp" />
         </android.support.constraint.ConstraintLayout>
+
     </ScrollView>
+
 
 </android.support.constraint.ConstraintLayout>

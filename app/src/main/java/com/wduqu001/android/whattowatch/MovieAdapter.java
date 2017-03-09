@@ -15,10 +15,9 @@ import java.util.List;
 
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
-    private static final String TAG = MovieAdapter.class.getSimpleName();
 
     private List<Movie> mMovies;
-    private MovieAdapterOnClickHandler mClickHandler;
+    private final MovieAdapterOnClickHandler mClickHandler;
 
     MovieAdapter(Activity activity) {
         mClickHandler = (MovieAdapterOnClickHandler) activity;
