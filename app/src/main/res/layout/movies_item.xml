@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_movies_list_item"
     android:layout_width="match_parent"
     android:layout_height="300dp"
@@ -15,7 +16,8 @@
         android:layout_height="match_parent"
         android:layout_columnWeight="1"
         android:layout_rowWeight="1"
+        android:background="@android:color/background_dark"
         android:contentDescription="@string/movie_poster"
-        android:src="@android:drawable/ic_menu_report_image"/>
+        android:src="@android:drawable/ic_menu_report_image" />
 
 </GridLayout>

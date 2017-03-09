@@ -10,7 +10,7 @@ import com.squareup.picasso.Picasso;
 
 public class MovieDetail extends AppCompatActivity {
 
-    final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w185";
+    final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +26,10 @@ public class MovieDetail extends AppCompatActivity {
         Movie movie = getIntent().getParcelableExtra("movie");
         Picasso.with(this)
                 .load(TMDB_IMG_URL + movie.getBackdropPath())
-                .fit()
                 .placeholder(R.drawable.placeholder350)
+                .error(R.drawable.imagenotfound)
+                .noFade()
+                .fit()
                 .into(mThumbnail);
 
         setTitle(movie.getTitle());
