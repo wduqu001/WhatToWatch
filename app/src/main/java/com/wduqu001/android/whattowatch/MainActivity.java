@@ -20,8 +20,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    final boolean ASCENDING = false;
-    final boolean DESCENDING = true;
+    final int POPULAR_MOVIES = 0;
+    final int TOP_RATED = 1;
     private RecyclerView mRecyclerView;
     private MovieAdapter mMovieAdapter;
     private TextView mErrorMessageDisplay;
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mMovieAdapter = new MovieAdapter(this);
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadPopularMovieList(DESCENDING);
+        loadMovieList(POPULAR_MOVIES);
     }
 
     /**
@@ -75,13 +75,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     /**
      * Builds url and executes QueryTask loading a list of movies from the TMDB api.
      *
-     * @param order Choose from one of the available sort options. (Ascending, Descending)
-     *              default: DESCENDING
+     * @param option Choose from one of the available options. (TOP_RATED, POPULAR_MOVIES)
+     *              default: POPULAR_MOVIES
      */
-    private void loadPopularMovieList(boolean order) {
+    private void loadMovieList(int option) {
         URL url = null;
         try {
-            url = NetworkUtils.buildPopularMoviesUrl(order);
+            url = NetworkUtils.buildMoviesUrl(option);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             showErrorMessage();
@@ -104,12 +104,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_sort_asc) {
-            loadPopularMovieList(ASCENDING);
+        if (id == R.id.action_top_rated) {
+            loadMovieList(TOP_RATED);
             return true;
         }
-        if (id == R.id.action_sort_desc) {
-            loadPopularMovieList(DESCENDING);
+        if (id == R.id.action_most_popular) {
+            loadMovieList(POPULAR_MOVIES);
             return true;
         }
 

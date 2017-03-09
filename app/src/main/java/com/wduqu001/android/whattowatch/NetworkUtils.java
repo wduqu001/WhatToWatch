@@ -24,7 +24,7 @@ import java.util.Scanner;
 public class NetworkUtils {
 
     private final static String TMDB_POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
-    private final static String TMDB_DISCOVER_POPULAR_URL = "http://api.themoviedb.org/3/discover/movie";
+    private final static String TMDB_TOP_RATED_URL = "http://api.themoviedb.org/3/movie/top_rated";
     private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
     private final static String LANGUAGE = Locale.getDefault().getLanguage();
     private final static int PAGES = 1;
@@ -32,17 +32,16 @@ public class NetworkUtils {
     /**
      * * Builds a url for PopularMovies
      *
-     * @param descendingOrder If the list of movies should be in descendingOrder
+     * @param option Choose between "most popular movies(0)" and "top rated movies (1)"
      * @return a new url for the tmdb api
      * @throws MalformedURLException
      */
-    static URL buildPopularMoviesUrl(boolean descendingOrder) throws MalformedURLException {
-        String order = "popularity.desc";
+    static URL buildMoviesUrl(int option) throws MalformedURLException {
+        String base = TMDB_POPULAR_MOVIES_URL;
 
-        if (!descendingOrder) order = "popularity.asc";
+        if (option == 1) base = TMDB_TOP_RATED_URL;
 
-        Uri builtUri = Uri.parse(TMDB_DISCOVER_POPULAR_URL).buildUpon()
-                .appendQueryParameter("sort_by", order)
+        Uri builtUri = Uri.parse(base).buildUpon()
                 .appendQueryParameter("api_key", TMDB_API_KEY)
                 .appendQueryParameter("language", LANGUAGE)
                 .appendQueryParameter("page", Integer.toString(PAGES))

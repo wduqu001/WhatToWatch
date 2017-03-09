@@ -3,8 +3,8 @@
     <string name="error_message">An error has occurred. Check Your Connection and Try Again</string>
     <string name="movie_poster">Movie poster</string>
     <string name="movie_thumbnail">Movie thumbnail</string>
-    <string name="sort_asc">Ascending</string>
-    <string name="sort_desc">Descending</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="popular">Popular</string>
     <string name="overview">Overview</string>
     <string name="sample_long_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="not_available">We don\'t have an overview translated in English. Help us expand our database by adding one.( https://www.themoviedb.org/contribute )</string>
