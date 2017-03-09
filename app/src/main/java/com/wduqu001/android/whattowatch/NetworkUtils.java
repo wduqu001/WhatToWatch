@@ -26,7 +26,7 @@ public class NetworkUtils {
     private final static String TMDB_POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
     private final static String TMDB_TOP_RATED_URL = "http://api.themoviedb.org/3/movie/top_rated";
     private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
-    private final static String LANGUAGE = Locale.getDefault().getLanguage();
+    private final static String LANGUAGE = Locale.getDefault().getLanguage().concat("-").concat(Locale.getDefault().getCountry());
     private final static int PAGES = 1;
 
     /**
