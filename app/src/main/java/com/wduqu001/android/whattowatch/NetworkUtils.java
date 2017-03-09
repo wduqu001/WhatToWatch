@@ -31,6 +31,7 @@ public class NetworkUtils {
 
     /**
      * * Builds a url for PopularMovies
+     *
      * @param descendingOrder If the list of movies should be in descendingOrder
      * @return a new url for the tmdb api
      * @throws MalformedURLException
@@ -50,9 +51,10 @@ public class NetworkUtils {
         return new URL(builtUri.toString());
     }
 
-    static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+    static String getResponseFromHttpUrl(URL url) {
+        HttpURLConnection urlConnection;
         try {
+            urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = urlConnection.getInputStream();
 
             Scanner scanner = new Scanner(in);
@@ -61,44 +63,50 @@ public class NetworkUtils {
             boolean hasInput = scanner.hasNext();
             if (hasInput) {
                 return scanner.next();
-            } else {
-                return null;
             }
-        } finally {
             urlConnection.disconnect();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**
      * Builds a object of type List<Movie> from a String ( resulted from a http request)
+     *
      * @param StringParam
      * @return A list of Movies
      * @throws JSONException
      */
-    static List<Movie> getMoviesList(String StringParam) throws JSONException {
+    static List<Movie> getMoviesList(String StringParam) {
 
-        JSONArray moviesArray = new JSONObject(StringParam).getJSONArray("results");
+        JSONArray moviesArray;
+        List<Movie> movieList = null;
 
-        if (moviesArray == null) {
-            return null;
-        }
-        List<Movie> movieList = new ArrayList<>();
+        try {
+            moviesArray = new JSONObject(StringParam).getJSONArray("results");
 
-        for (int i = 0; i < moviesArray.length(); i++) {
-            JSONObject movieData = moviesArray.getJSONObject(i);
+            if (moviesArray == null) {
+                return null;
+            }
+            movieList = new ArrayList<>();
 
-            try {
+            for (int i = 0; i < moviesArray.length(); i++) {
+
+                JSONObject movieData = moviesArray.getJSONObject(i);
                 Movie movie = getMovieFromJson(movieData);
                 movieList.add(i, movie);
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
         return movieList;
     }
 
     /**
      * Creates a Movie object from JSON
+     *
      * @param movieData JSONObject from with Movie will be extracted
      * @return Movie
      * @throws JSONException
@@ -121,6 +129,7 @@ public class NetworkUtils {
     /**
      * Checks for internet connection.
      * Method based on solution available at http://stackoverflow.com/a/27312494/5988277
+     *
      * @return false if internet connection is not available
      */
     public static boolean isOnline() {
@@ -132,7 +141,9 @@ public class NetworkUtils {
             socket.close();
 
             return true;
-        } catch (IOException e) { return false; }
+        } catch (IOException e) {
+            return false;
+        }
     }
 
 }

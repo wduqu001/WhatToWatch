@@ -3,7 +3,6 @@ package com.wduqu001.android.whattowatch;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,8 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import org.json.JSONException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -62,10 +59,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
+    void showLoading(int visibility) {
+        mLoadingIndicator.setVisibility(visibility);
+    }
+
     /**
      * Builds url and executes QueryTask loading a list of movies from the TMDB api.
+     *
      * @param order Choose from one of the available sort options. (Ascending, Descending)
-       default: DESCENDING
+     *              default: DESCENDING
      */
     private void loadPopularMovieList(boolean order) {
         URL url = null;
@@ -75,7 +77,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             e.printStackTrace();
             showErrorMessage();
         }
-        new QueryTask().execute(url);
+        showLoading(View.VISIBLE);
+        new MovieQueryTask(this, new TaskCompleteListener()).execute(url);
     }
 
     /**
@@ -85,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-        // return true;
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -115,55 +117,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         startActivity(intent);
     }
 
-    /**
-     * Task responsive for Querying the api for movie data
-     */
-    private class QueryTask extends AsyncTask<URL, Void, String> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
+    class TaskCompleteListener implements QueryTaskCompleteListener<List<Movie>> {
         /**
-         * Override this method to perform a computation on a background thread. The
-         * specified parameters are the parameters passed to {@link #execute}
-         * by the caller of this task.
+         * Invoked when the AsyncTask has completed its execution.
+         *
+         * @param result The resulting object from the AsyncTask.
          */
         @Override
-        protected String doInBackground(URL... params) {
-            URL url = params[0];
-            String moviesApiResult = null;
-            try {
-                if(NetworkUtils.isOnline()) {
-                    moviesApiResult = NetworkUtils.getResponseFromHttpUrl(url);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        public void onTaskComplete(List<Movie> result) {
+            showLoading(View.INVISIBLE);
+            if (result == null || result.isEmpty()) {
                 showErrorMessage();
+                return;
             }
-            return moviesApiResult;
-        }
-
-        /**
-         * Runs on the UI thread after {@link #doInBackground}.
-         * The specified result is the value returned by {@link #doInBackground}.
-         */
-        @Override
-        protected void onPostExecute(String moviesApiResult) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (moviesApiResult != null && !moviesApiResult.equals("")) {
-                showMovieDataView();
-                try {
-                    List<Movie> mMovies = NetworkUtils.getMoviesList(moviesApiResult);
-                    mMovieAdapter.setMovies(mMovies);
-                    mMovieAdapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                showErrorMessage();
-            }
+            mMovieAdapter.setMovies(result);
+            mMovieAdapter.notifyDataSetChanged();
+            showMovieDataView();
         }
     }
+
 }
