@@ -15,7 +15,7 @@
         android:layout_columnWeight="1"
         android:layout_rowWeight="1"
         android:layout_gravity="fill"
-        android:background="@android:color/background_dark"
+        android:background="@color/backgroundDark"
         android:contentDescription="@string/movie_poster"
         android:src="@android:drawable/ic_menu_report_image" />
 
