@@ -92,6 +92,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
         showLoading(View.VISIBLE);
         new MovieQueryTask(new TaskCompleteListener()).execute(url);
+        UpdateTitle(option);
+    }
+
+    /**
+     * Updates the title to reflect the current user's choice
+     */
+    private void UpdateTitle(int option) {
+        if(option == POPULAR_MOVIES){
+            setTitle(getString(R.string.popular));
+        }
+        else {
+            setTitle(getString(R.string.top_rated));
+        }
     }
 
     /**
