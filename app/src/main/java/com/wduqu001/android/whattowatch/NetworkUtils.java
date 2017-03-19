@@ -9,8 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
@@ -19,7 +17,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class NetworkUtils {
 
@@ -50,56 +51,40 @@ public class NetworkUtils {
         return new URL(builtUri.toString());
     }
 
-    static String getResponseFromHttpUrl(URL url) {
-        HttpURLConnection urlConnection;
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream in = urlConnection.getInputStream();
+    static String getResponseFromHttpUrl(URL url) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder().url(url).build();
 
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            }
-            urlConnection.disconnect();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+            Response response = client.newCall(request).execute();
+            return response.body().string();
     }
 
     /**
      * Builds a object of type List<Movie> from a String ( resulted from a http request)
      *
-     * @param StringParam
+     * @param StringParam http result in a String
      * @return A list of Movies
      * @throws JSONException
      */
-    static List<Movie> getMoviesList(String StringParam) {
+    static List<Movie> getMoviesList(String StringParam) throws JSONException {
 
         JSONArray moviesArray;
         List<Movie> movieList = null;
 
-        try {
-            moviesArray = new JSONObject(StringParam).getJSONArray("results");
+        moviesArray = new JSONObject(StringParam).getJSONArray("results");
 
-            if (moviesArray == null) {
-                return null;
-            }
-            movieList = new ArrayList<>();
-
-            for (int i = 0; i < moviesArray.length(); i++) {
-
-                JSONObject movieData = moviesArray.getJSONObject(i);
-                Movie movie = getMovieFromJson(movieData);
-                movieList.add(i, movie);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (moviesArray == null) {
+            return null;
         }
+        movieList = new ArrayList<>();
+
+        for (int i = 0; i < moviesArray.length(); i++) {
+
+            JSONObject movieData = moviesArray.getJSONObject(i);
+            Movie movie = getMovieFromJson(movieData);
+            movieList.add(i, movie);
+        }
+
         return movieList;
     }
 
@@ -131,8 +116,8 @@ public class NetworkUtils {
      *
      * @return false if internet connection is not available
      */
-    public static boolean isOnline() {
-        int timeoutMs = 3000;
+    static boolean isOnline() {
+        int timeoutMs = 3500;
         Socket socket = new Socket();
         try {
             SocketAddress socketAddress = new InetSocketAddress("themoviedb.org", 80);

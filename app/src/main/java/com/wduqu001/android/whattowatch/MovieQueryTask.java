@@ -2,8 +2,14 @@ package com.wduqu001.android.whattowatch;
 
 import android.os.AsyncTask;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+
+import static com.wduqu001.android.whattowatch.NetworkUtils.getMoviesList;
+import static com.wduqu001.android.whattowatch.NetworkUtils.getResponseFromHttpUrl;
 
 /**
  * Task responsive for Querying the api for movie data
@@ -12,7 +18,7 @@ public class MovieQueryTask extends AsyncTask<URL, Void, List<Movie>> {
     private final QueryTaskCompleteListener<List<Movie>> mTaskCompleteListener;
 
 
-    public MovieQueryTask(MainActivity.TaskCompleteListener listener) {
+    MovieQueryTask(MainActivity.TaskCompleteListener listener) {
         this.mTaskCompleteListener = listener;
     }
 
@@ -27,8 +33,12 @@ public class MovieQueryTask extends AsyncTask<URL, Void, List<Movie>> {
         String moviesApiResult;
         List<Movie> mMovies = null;
         if (NetworkUtils.isOnline()) {
-            moviesApiResult = NetworkUtils.getResponseFromHttpUrl(url);
-            mMovies = NetworkUtils.getMoviesList(moviesApiResult);
+            try {
+                moviesApiResult = getResponseFromHttpUrl(url);
+                mMovies = getMoviesList(moviesApiResult);
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
         }
         return mMovies;
     }
