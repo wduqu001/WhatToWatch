@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private int numberOfColumns() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int widthDivider = 352;
+        int widthDivider = 360; // The most common width among android devices and it's twice the side of the movie poster
         int width = displayMetrics.widthPixels;
         int nColumns = width / widthDivider;
         if (nColumns < 2) return 2;
