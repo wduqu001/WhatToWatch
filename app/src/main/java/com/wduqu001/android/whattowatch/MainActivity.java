@@ -24,7 +24,6 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     private final int POPULAR_MOVIES = 0;
-    private final int TOP_RATED = 1;
     private MovieAdapter mMovieAdapter;
 
     @BindView(R.id.recyclerview_movies)
@@ -122,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int id = item.getItemId();
 
         if (id == R.id.action_top_rated) {
+            int TOP_RATED = 1;
             loadMovieList(TOP_RATED);
             return true;
         }

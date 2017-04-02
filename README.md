@@ -1,8 +1,8 @@
 # WhatToWatch
-Created during for the first project in Udacity's Android Developer Nanodegree.
+Created during for the first project in Udacity Android Developer Nanodegree.
 The purpose of this app, is to help users discover popular and highly rated movies using the themoviedb.org web API. 
 
-<img src="https://www.themoviedb.org/assets/static_cache/bb45549239e25f1770d5f76727bcd7c0/images/v4/logos/408x161-powered-by-rectangle-blue.png" widht="102" height="40" alt="Powered by TMDB">
+<img src="https://www.themoviedb.org/assets/static_cache/bb45549239e25f1770d5f76727bcd7c0/images/v4/logos/408x161-powered-by-rectangle-blue.png" width="102" height="40" alt="Powered by TMDB">
 
 ## Features
 * Sort the order by most popular(descending order) or least popular movies(ascending order).
@@ -17,4 +17,4 @@ Add the following line, replacing the value with your key.
 ``` TMDB_API_KEY="YOUR_API_KEY" ```
 
 ## Screenshots
-<img src="http://i.imgur.com/xYXv2EC.jpg" widht="312" height="556" alt="Top Rated Movies"> <img src="http://i.imgur.com/eA2Yedo.jpg" widht="312" height="556" alt="Most Popular Movies">
+<img src="http://i.imgur.com/xYXv2EC.jpg" width="312" height="556" alt="Top Rated Movies"> <img src="http://i.imgur.com/eA2Yedo.jpg" width="312" height="556" alt="Most Popular Movies">

@@ -9,7 +9,9 @@ import static org.junit.Assert.assertEquals;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
+@SuppressWarnings("unused")
 public class ExampleUnitTest {
+    @SuppressWarnings("unused")
     @Test
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
