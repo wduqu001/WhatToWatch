@@ -51,17 +51,15 @@
 
             <RatingBar
                 android:id="@+id/rb_voteAverage"
+                style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/marginDefault"
-                android:isIndicator="true"
                 android:numStars="5"
                 app:layout_constraintHorizontal_bias="0.504"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_title"
-                tools:layout_constraintLeft_creator="1"
-                tools:layout_constraintRight_creator="1"
                 tools:rating="4.5" />
 
             <TextView

@@ -1,6 +1,6 @@
 package com.wduqu001.android.whattowatch;
 
-public interface QueryTaskCompleteListener<T> {
+interface QueryTaskCompleteListener<T> {
     /**
      * Invoked when the AsyncTask has completed its execution.
      *

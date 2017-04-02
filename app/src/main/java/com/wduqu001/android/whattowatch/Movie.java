@@ -36,7 +36,7 @@ public class Movie implements Parcelable {
         this.mBackdropPath = backdropPath;
     }
 
-    protected Movie(Parcel in) {
+    private Movie(Parcel in) {
         mMovieId = in.readString();
         mTitle = in.readString();
         mPosterPath = in.readString();

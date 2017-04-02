@@ -22,7 +22,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class NetworkUtils {
+class NetworkUtils {
 
     private final static String TMDB_POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
     private final static String TMDB_TOP_RATED_URL = "http://api.themoviedb.org/3/movie/top_rated";
@@ -69,7 +69,7 @@ public class NetworkUtils {
     static List<Movie> getMoviesList(String StringParam) throws JSONException {
 
         JSONArray moviesArray;
-        List<Movie> movieList = null;
+        List<Movie> movieList;
 
         moviesArray = new JSONObject(StringParam).getJSONArray("results");
 

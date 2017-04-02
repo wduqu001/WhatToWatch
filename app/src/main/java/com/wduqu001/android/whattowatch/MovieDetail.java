@@ -13,8 +13,6 @@ import butterknife.ButterKnife;
 
 public class MovieDetail extends AppCompatActivity {
 
-    private final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
-
     // Automatically finds each field by the specified ID.
     @BindView(R.id.img_thumbnail) ImageView mThumbnail;
     @BindView(R.id.tv_title) TextView mTitle;
@@ -29,6 +27,7 @@ public class MovieDetail extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Movie movie = getIntent().getParcelableExtra("movie");
+        String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
         Picasso.with(this)
                 .load(TMDB_IMG_URL + movie.getBackdropPath())
                 .placeholder(R.drawable.placeholder350)

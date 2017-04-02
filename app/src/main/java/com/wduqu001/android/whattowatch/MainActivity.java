@@ -23,8 +23,8 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    final int POPULAR_MOVIES = 0;
-    final int TOP_RATED = 1;
+    private final int POPULAR_MOVIES = 0;
+    private final int TOP_RATED = 1;
     private MovieAdapter mMovieAdapter;
 
     @BindView(R.id.recyclerview_movies)
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
-    void showLoading(int visibility) {
+    private void showLoading(int visibility) {
         mLoadingIndicator.setVisibility(visibility);
     }
 
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     @Override
-    public void onClick(View view, Movie movie) {
+    public void onClick(Movie movie) {
         Context context = this;
         Class destinationActivity = MovieDetail.class;
 
