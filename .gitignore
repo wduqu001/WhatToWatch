@@ -1,5 +1,5 @@
 
-# Created by https://www.gitignore.io/api/android
+# Created by https://www.gitignore.io/api/intellij,android,gradle
 
 ### Android ###
 # Built application files
@@ -22,6 +22,9 @@ out/
 build/
 gradle.properties
 
+# Google Services (e.g. APIs or Firebase)
+google-services.json
+
 # Local configuration file (sdk path, etc)
 local.properties
 
@@ -42,9 +45,9 @@ captures/
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/gradle.xml
+.idea/dictionaries
 .idea/libraries
 .idea/vcs.xml
-.idea/*
 
 # Keystore files
 *.jks
@@ -63,4 +66,78 @@ freeline_project_description.json
 ### Android Patch ###
 gen-external-apklibs
 
-# End of https://www.gitignore.io/api/android
+### Intellij ###
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+# User-specific stuff:
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+
+# Sensitive or high-churn files:
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.xml
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+
+# Gradle:
+.idea/**/gradle.xml
+.idea/**/libraries
+
+# Mongo Explorer plugin:
+.idea/**/mongoSettings.xml
+
+## File-based project format:
+*.iws
+
+## Plugin-specific files:
+
+# IntelliJ
+/out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+.idea/replstate.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+### Intellij Patch ###
+# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
+
+# *.iml
+# modules.xml
+# .idea/misc.xml
+# *.ipr
+
+# Sonarlint plugin
+.idea/sonarlint
+
+### Gradle ###
+.gradle
+/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+# End of https://www.gitignore.io/api/intellij,android,gradle
