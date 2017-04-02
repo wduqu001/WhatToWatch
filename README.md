@@ -17,5 +17,4 @@ Add the following line, replacing the value with your key.
 ``` TMDB_API_KEY="YOUR_API_KEY" ```
 
 ## Screenshots
-<img src="http://i.imgur.com/0tpm6vb.jpg" widht="312" height="557" alt="Home screen">
-![App demo](http://i.imgur.com/WvnZMMn.gif)
+<img src="http://i.imgur.com/xYXv2EC.jpg" widht="312" height="556" alt="Top Rated Movies"> <img src="http://i.imgur.com/eA2Yedo.jpg" widht="312" height="556" alt="Most Popular Movies">
