@@ -16,18 +16,20 @@ import java.net.SocketAddress;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static java.util.Locale.getDefault;
+
 class NetworkUtils {
 
-    private final static String TMDB_POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
-    private final static String TMDB_TOP_RATED_URL = "http://api.themoviedb.org/3/movie/top_rated";
+    private final static String TMDB_MOVIE_URL = "https://api.themoviedb.org/3/movie/";
+    private final static String POPULAR_MOVIES = "popular";
+    private final static String TOP_RATED = "top_rated";
     private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
-    private final static String LANGUAGE = Locale.getDefault().getLanguage().concat("-").concat(Locale.getDefault().getCountry());
+    private final static String LANGUAGE = getDefault().getLanguage().concat("-").concat(getDefault().getCountry());
     private final static int PAGES = 1;
 
     /**
@@ -38,11 +40,26 @@ class NetworkUtils {
      * @throws MalformedURLException
      */
     static URL buildMoviesUrl(int option) throws MalformedURLException {
-        String base = TMDB_POPULAR_MOVIES_URL;
+        String baseUrl = TMDB_MOVIE_URL;
 
-        if (option == 1) base = TMDB_TOP_RATED_URL;
+        if (option == 1) baseUrl += TOP_RATED;
+        else baseUrl += POPULAR_MOVIES;
 
-        Uri builtUri = Uri.parse(base).buildUpon()
+        Uri builtUri = Uri.parse(baseUrl).buildUpon()
+                .appendQueryParameter("api_key", TMDB_API_KEY)
+                .appendQueryParameter("language", LANGUAGE)
+                .appendQueryParameter("page", Integer.toString(PAGES))
+                .build();
+
+        return new URL(builtUri.toString());
+    }
+
+    private static URL buildMoviesUrl(String movieId, String info) throws MalformedURLException {
+        String baseUrl = TMDB_MOVIE_URL;
+
+        Uri builtUri = Uri.parse(baseUrl).buildUpon()
+                .appendPath(movieId)
+                .appendPath(info)
                 .appendQueryParameter("api_key", TMDB_API_KEY)
                 .appendQueryParameter("language", LANGUAGE)
                 .appendQueryParameter("page", Integer.toString(PAGES))
@@ -55,8 +72,8 @@ class NetworkUtils {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
 
-            Response response = client.newCall(request).execute();
-            return response.body().string();
+        Response response = client.newCall(request).execute();
+        return response.body().string();
     }
 
     /**
@@ -79,13 +96,46 @@ class NetworkUtils {
         movieList = new ArrayList<>();
 
         for (int i = 0; i < moviesArray.length(); i++) {
-
             JSONObject movieData = moviesArray.getJSONObject(i);
             Movie movie = getMovieFromJson(movieData);
             movieList.add(i, movie);
         }
-
+        // TODO: Find a way to load the additionalMovieData without slowing down the app
+//        AdditionalMovieData(movieList.get(0));
         return movieList;
+    }
+
+    private static void AdditionalMovieData(Movie movie) {
+        String movieId = movie.getMovieId();
+        ArrayList<MovieVideo> videoList = getVideosList(movieId);
+        if (videoList != null) {
+            movie.setMovieVideos(videoList);
+        }
+    }
+
+    private static ArrayList<MovieVideo> getVideosList(String movieId) {
+        ArrayList<MovieVideo> videoList = new ArrayList<>();
+        try {
+            URL url = buildMoviesUrl(movieId, "videos");
+            String httpResult = getResponseFromHttpUrl(url);
+            if (httpResult.isEmpty()) {
+                Log.w("getVideoList", "No video was found!");
+                return null;
+            } else {
+                JSONArray jsonArray = new JSONObject(httpResult).getJSONArray("results");
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject movieData = jsonArray.getJSONObject(i);
+
+                    MovieVideo video = new MovieVideo(
+                            movieData.getString("key"),
+                            movieData.getString("name"));
+                    videoList.add(video);
+                }
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        return videoList;
     }
 
     /**

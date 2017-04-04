@@ -3,6 +3,8 @@ package com.wduqu001.android.whattowatch;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 /**
  * Represents some information collected about a Movie from the api.
  */
@@ -29,6 +31,8 @@ public class Movie implements Parcelable {
     private String mOverview;
     private String mReleaseDate;
     private String mOriginalTitle;
+
+    private ArrayList<MovieVideo> mVideosList;
 
     Movie(String movieId, String title, String posterPath, String backdropPath) {
         this.mMovieId = movieId;
@@ -70,6 +74,10 @@ public class Movie implements Parcelable {
         dest.writeString(mOverview);
         dest.writeString(mReleaseDate);
         dest.writeString(mOriginalTitle);
+    }
+
+    public String getMovieId() {
+        return mMovieId;
     }
 
     public String getTitle() {
@@ -114,5 +122,13 @@ public class Movie implements Parcelable {
 
     public void setOriginalTitle(String originalTitle) {
         this.mOriginalTitle = originalTitle;
+    }
+
+    public ArrayList<MovieVideo> getMovieVideos() {
+        return mVideosList;
+    }
+
+    public void setMovieVideos(ArrayList<MovieVideo> movieVideos) {
+        this.mVideosList = movieVideos;
     }
 }
