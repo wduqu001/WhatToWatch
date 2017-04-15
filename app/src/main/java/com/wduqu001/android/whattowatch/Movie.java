@@ -54,7 +54,7 @@ public class Movie implements Parcelable {
         mOverview = in.readString();
         mReleaseDate = in.readString();
         mOriginalTitle = in.readString();
-        Log.d(TAG, "Movie: "+ in.toString());
+        Log.d(TAG, "Movie: " + in.toString());
     }
 
     @Override
@@ -136,6 +136,7 @@ public class Movie implements Parcelable {
     public void setVideos(ArrayList<MovieVideo> videos) {
         this.mVideos = videos;
     }
+
     public ArrayList<MovieReview> getReviews() {
         return mReviews;
     }

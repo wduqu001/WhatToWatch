@@ -25,13 +25,13 @@ import static java.util.Locale.getDefault;
 
 class NetworkUtils {
 
+    public static final String TAG = "NetworkUtils";
     private final static String TMDB_MOVIE_URL = "https://api.themoviedb.org/3/movie/";
     private final static String POPULAR_MOVIES = "popular";
     private final static String TOP_RATED = "top_rated";
     private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
     private final static String LANGUAGE = getDefault().getLanguage().concat("-").concat(getDefault().getCountry());
     private final static int PAGES = 1;
-    public static final String TAG = "NetworkUtils";
 
     /**
      * * Builds a url for PopularMovies
@@ -92,6 +92,7 @@ class NetworkUtils {
 
     /**
      * Build the URL for a specific movie
+     *
      * @param movieId The movie to be requested
      * @return URL
      * @throws MalformedURLException
@@ -102,7 +103,7 @@ class NetworkUtils {
         Uri builtUri = Uri.parse(TMDB_MOVIE_URL).buildUpon()
                 .appendPath(movieId)
                 .appendQueryParameter("api_key", TMDB_API_KEY)
-                .appendQueryParameter("append_to_response",appendedQuerys )
+                .appendQueryParameter("append_to_response", appendedQuerys)
                 .build();
 
         return new URL(builtUri.toString());
@@ -110,6 +111,7 @@ class NetworkUtils {
 
     /**
      * Gets additional information about a movie. Currently it only gets videos and reviews
+     *
      * @param movie the movie object to be updated
      */
     private static void getMovieDetails(Movie movie) {
@@ -121,7 +123,7 @@ class NetworkUtils {
             JSONArray videosArray = new JSONObject(httpResult).getJSONObject("videos").getJSONArray("results");
             JSONArray reviewsArray = new JSONObject(httpResult).getJSONObject("reviews").getJSONArray("results");
             movie.setVideos(getVideos(videosArray));
-            if(reviewsArray.length() > 0){
+            if (reviewsArray.length() > 0) {
                 movie.setReviews(getReviews(reviewsArray));
                 Log.d(TAG, "getMovieDetails: No reviews available");
             }
@@ -146,7 +148,7 @@ class NetworkUtils {
         ArrayList<MovieReview> reviews = new ArrayList<>();
         for (int i = 0; i < videosArray.length(); i++) {
             JSONObject movieData = videosArray.getJSONObject(i);
-            Log.i(TAG, "getMovieDetails: getReviews: "+ movieData);
+            Log.i(TAG, "getMovieDetails: getReviews: " + movieData);
             MovieReview review = new MovieReview(
                     movieData.getString("id"),
                     movieData.getString("author"),
