@@ -3,6 +3,7 @@ package com.wduqu001.android.whattowatch;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -23,15 +25,17 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
+    private static final int TOP_RATED = 1;
     private final int POPULAR_MOVIES = 0;
-    private MovieAdapter mMovieAdapter;
-
     @BindView(R.id.recyclerview_movies)
     RecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display)
     TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator)
     ProgressBar mLoadingIndicator;
+    private int mOption;
+    private MovieAdapter mMovieAdapter;
+    private List<Movie> mMovieList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns()));
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovieList(POPULAR_MOVIES);
+        // recovering the instance state
+        if (savedInstanceState != null) {
+            mMovieList = savedInstanceState.getParcelableArrayList("movies");
+            mOption = savedInstanceState.getInt("option");
+            updateView(mMovieList);
+        } else {
+            mOption = POPULAR_MOVIES;
+            loadMovieList();
+        }
     }
 
     /**
@@ -77,31 +89,26 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     /**
      * Builds url and executes QueryTask loading a list of movies from the TMDB api.
-     *
-     * @param option Choose from one of the available options. (TOP_RATED, POPULAR_MOVIES)
-     *               default: POPULAR_MOVIES
      */
-    private void loadMovieList(int option) {
+    private void loadMovieList() {
         URL url = null;
         try {
-            url = NetworkUtils.buildMoviesUrl(option);
+            url = NetworkUtils.buildMoviesUrl(mOption);
         } catch (MalformedURLException e) {
             e.printStackTrace();
             showErrorMessage();
         }
         showLoading(View.VISIBLE);
         new MovieQueryTask(new TaskCompleteListener()).execute(url);
-        UpdateTitle(option);
     }
 
     /**
      * Updates the title to reflect the current user's choice
      */
-    private void UpdateTitle(int option) {
-        if(option == POPULAR_MOVIES){
+    private void UpdateTitle() {
+        if (mOption == POPULAR_MOVIES) {
             setTitle(getString(R.string.popular));
-        }
-        else {
+        } else {
             setTitle(getString(R.string.top_rated));
         }
     }
@@ -118,18 +125,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_top_rated) {
-            int TOP_RATED = 1;
-            loadMovieList(TOP_RATED);
-            return true;
-        }
-        if (id == R.id.action_most_popular) {
-            loadMovieList(POPULAR_MOVIES);
-            return true;
-        }
-
+        mOption = (item.getItemId() == R.id.action_top_rated ? TOP_RATED : POPULAR_MOVIES);
+        loadMovieList();
         return super.onOptionsItemSelected(item);
     }
 
@@ -143,6 +140,26 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         startActivity(intent);
     }
 
+    private void updateView(List<Movie> movieList) {
+        showLoading(View.INVISIBLE);
+        if (movieList == null || movieList.isEmpty()) {
+            showErrorMessage();
+            return;
+        }
+        mMovieList = movieList;
+        mMovieAdapter.setMovies(mMovieList);
+        mMovieAdapter.notifyDataSetChanged();
+        UpdateTitle();
+        showMovieDataView();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("movies", (ArrayList<? extends Parcelable>) mMovieList);
+        outState.putInt("option", mOption);
+        super.onSaveInstanceState(outState);
+    }
+
     class TaskCompleteListener implements QueryTaskCompleteListener<List<Movie>> {
         /**
          * Invoked when the AsyncTask has completed its execution.
@@ -151,15 +168,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
          */
         @Override
         public void onTaskComplete(List<Movie> result) {
-            showLoading(View.INVISIBLE);
-            if (result == null || result.isEmpty()) {
-                showErrorMessage();
-                return;
-            }
-            mMovieAdapter.setMovies(result);
-            mMovieAdapter.notifyDataSetChanged();
-            showMovieDataView();
+            updateView(result);
         }
     }
-
 }
