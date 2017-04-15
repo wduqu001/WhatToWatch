@@ -31,6 +31,7 @@ class NetworkUtils {
     private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
     private final static String LANGUAGE = getDefault().getLanguage().concat("-").concat(getDefault().getCountry());
     private final static int PAGES = 1;
+    public static final String TAG = "NetworkUtils";
 
     /**
      * * Builds a url for PopularMovies
@@ -50,21 +51,6 @@ class NetworkUtils {
                 .appendQueryParameter("language", LANGUAGE)
                 .appendQueryParameter("page", Integer.toString(PAGES))
                 .build();
-
-        return new URL(builtUri.toString());
-    }
-
-    private static URL buildMoviesUrl(String movieId, String info) throws MalformedURLException {
-        String baseUrl = TMDB_MOVIE_URL;
-
-        Uri builtUri = Uri.parse(baseUrl).buildUpon()
-                .appendPath(movieId)
-                .appendPath(info)
-                .appendQueryParameter("api_key", TMDB_API_KEY)
-                .appendQueryParameter("language", LANGUAGE)
-                .appendQueryParameter("page", Integer.toString(PAGES))
-                .build();
-
         return new URL(builtUri.toString());
     }
 
@@ -87,7 +73,6 @@ class NetworkUtils {
 
         JSONArray moviesArray;
         List<Movie> movieList;
-
         moviesArray = new JSONObject(StringParam).getJSONArray("results");
 
         if (moviesArray == null) {
@@ -101,41 +86,76 @@ class NetworkUtils {
             movieList.add(i, movie);
         }
         // TODO: Find a way to load the additionalMovieData without slowing down the app
-//        AdditionalMovieData(movieList.get(0));
+        getMovieDetails(movieList.get(0));
         return movieList;
     }
 
-    private static void AdditionalMovieData(Movie movie) {
-        String movieId = movie.getMovieId();
-        ArrayList<MovieVideo> videoList = getVideosList(movieId);
-        if (videoList != null) {
-            movie.setMovieVideos(videoList);
-        }
+    /**
+     * Build the URL for a specific movie
+     * @param movieId The movie to be requested
+     * @return URL
+     * @throws MalformedURLException
+     */
+    private static URL buildMovieUrl(String movieId) throws MalformedURLException {
+        String appendedQuerys = "reviews,videos";
+
+        Uri builtUri = Uri.parse(TMDB_MOVIE_URL).buildUpon()
+                .appendPath(movieId)
+                .appendQueryParameter("api_key", TMDB_API_KEY)
+                .appendQueryParameter("append_to_response",appendedQuerys )
+                .build();
+
+        return new URL(builtUri.toString());
     }
 
-    private static ArrayList<MovieVideo> getVideosList(String movieId) {
-        ArrayList<MovieVideo> videoList = new ArrayList<>();
+    /**
+     * Gets additional information about a movie. Currently it only gets videos and reviews
+     * @param movie the movie object to be updated
+     */
+    private static void getMovieDetails(Movie movie) {
+        String movieId = movie.getMovieId();
         try {
-            URL url = buildMoviesUrl(movieId, "videos");
+            URL url = buildMovieUrl(movieId);
             String httpResult = getResponseFromHttpUrl(url);
-            if (httpResult.isEmpty()) {
-                Log.w("getVideoList", "No video was found!");
-                return null;
-            } else {
-                JSONArray jsonArray = new JSONObject(httpResult).getJSONArray("results");
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject movieData = jsonArray.getJSONObject(i);
 
-                    MovieVideo video = new MovieVideo(
-                            movieData.getString("key"),
-                            movieData.getString("name"));
-                    videoList.add(video);
-                }
+            JSONArray videosArray = new JSONObject(httpResult).getJSONObject("videos").getJSONArray("results");
+            JSONArray reviewsArray = new JSONObject(httpResult).getJSONObject("reviews").getJSONArray("results");
+            movie.setVideos(getVideos(videosArray));
+            if(reviewsArray.length() > 0){
+                movie.setReviews(getReviews(reviewsArray));
+                Log.d(TAG, "getMovieDetails: No reviews available");
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
-        return videoList;
+    }
+
+    private static ArrayList<MovieVideo> getVideos(JSONArray videosArray) throws JSONException {
+        ArrayList<MovieVideo> videos = new ArrayList<>();
+        for (int i = 0; i < videosArray.length(); i++) {
+            JSONObject movieData = videosArray.getJSONObject(i);
+            MovieVideo video = new MovieVideo(
+                    movieData.getString("key"),
+                    movieData.getString("name"));
+            videos.add(video);
+        }
+        return videos;
+    }
+
+    private static ArrayList<MovieReview> getReviews(JSONArray videosArray) throws JSONException {
+        ArrayList<MovieReview> reviews = new ArrayList<>();
+        for (int i = 0; i < videosArray.length(); i++) {
+            JSONObject movieData = videosArray.getJSONObject(i);
+            Log.i(TAG, "getMovieDetails: getReviews: "+ movieData);
+            MovieReview review = new MovieReview(
+                    movieData.getString("id"),
+                    movieData.getString("author"),
+                    movieData.getString("content"),
+                    movieData.getString("url")
+            );
+            reviews.add(review);
+        }
+        return reviews;
     }
 
     /**

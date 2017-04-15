@@ -2,8 +2,11 @@ package com.wduqu001.android.whattowatch;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Represents some information collected about a Movie from the api.
@@ -32,7 +35,8 @@ public class Movie implements Parcelable {
     private String mReleaseDate;
     private String mOriginalTitle;
 
-    private ArrayList<MovieVideo> mVideosList;
+    private ArrayList<MovieVideo> mVideos;
+    private ArrayList<MovieReview> mReviews;
 
     Movie(String movieId, String title, String posterPath, String backdropPath) {
         this.mMovieId = movieId;
@@ -50,6 +54,7 @@ public class Movie implements Parcelable {
         mOverview = in.readString();
         mReleaseDate = in.readString();
         mOriginalTitle = in.readString();
+        Log.d(TAG, "Movie: "+ in.toString());
     }
 
     @Override
@@ -124,11 +129,19 @@ public class Movie implements Parcelable {
         this.mOriginalTitle = originalTitle;
     }
 
-    public ArrayList<MovieVideo> getMovieVideos() {
-        return mVideosList;
+    public ArrayList<MovieVideo> getVideos() {
+        return mVideos;
     }
 
-    public void setMovieVideos(ArrayList<MovieVideo> movieVideos) {
-        this.mVideosList = movieVideos;
+    public void setVideos(ArrayList<MovieVideo> videos) {
+        this.mVideos = videos;
     }
+    public ArrayList<MovieReview> getReviews() {
+        return mReviews;
+    }
+
+    public void setReviews(ArrayList<MovieReview> reviews) {
+        this.mReviews = reviews;
+    }
+
 }
