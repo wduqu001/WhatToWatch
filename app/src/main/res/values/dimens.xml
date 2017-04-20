@@ -3,4 +3,7 @@
     <dimen name="marginDefault">8dp</dimen>
     <dimen name="movieItemHeight">180dp</dimen>
     <dimen name="errorTextSize">20sp</dimen>
+    <dimen name="defaultTextSize">15sp</dimen>
+    <dimen name="Title">24sp</dimen>
+    <dimen name="subtitle_text">18sp</dimen>
 </resources>
