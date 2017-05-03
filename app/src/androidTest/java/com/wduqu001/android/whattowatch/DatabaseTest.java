@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.test.InstrumentationRegistry;
 
-import com.wduqu001.android.whattowatch.data.FavoriteMoviesDbHelper;
-import com.wduqu001.android.whattowatch.data.MoviesContract.FavoriteMoviesEntry;
+import com.wduqu001.android.whattowatch.data.MoviesDbHelper;
+import com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry;
 
 import org.junit.Test;
 
@@ -18,11 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 public class DatabaseTest {
 
-    /* Context used to perform operations on the database */
     private final Context mContext = InstrumentationRegistry.getTargetContext();
 
-    /* Class reference to help load the constructor on runtime */
-    private final Class<FavoriteMoviesDbHelper> mDbHelperClass = FavoriteMoviesDbHelper.class;
+    private final Class<MoviesDbHelper> mDbHelperClass = MoviesDbHelper.class;
 
     @Test
     public void create_database_test() throws Exception {
@@ -37,10 +35,9 @@ public class DatabaseTest {
                 true,
                 db.isOpen());
 
-        /* This Cursor will contain the names of each table in the database */
         Cursor tableNameCursor = db.rawQuery(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='" +
-                        FavoriteMoviesEntry.TABLE_NAME + "'",
+                        MoviesEntry.TABLE_NAME + "'",
                 null);
 
         /*
@@ -53,7 +50,7 @@ public class DatabaseTest {
                 tableNameCursor.moveToFirst());
 
         assertEquals("Error: Database was created without the expected tables.",
-                FavoriteMoviesEntry.TABLE_NAME, tableNameCursor.getString(0));
+                MoviesEntry.TABLE_NAME, tableNameCursor.getString(0));
 
         tableNameCursor.close();
     }
@@ -73,26 +70,23 @@ public class DatabaseTest {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues testValues = new ContentValues();
-        testValues.put(FavoriteMoviesEntry.COLUMN_MOVIE_ID, "001");
-        testValues.put(FavoriteMoviesEntry.COLUMN_TITLE, "movie test");
-        testValues.put(FavoriteMoviesEntry.COLUMN_VOTE_AVERAGE, 2.5);
-        testValues.put(FavoriteMoviesEntry.COLUMN_OVERVIEW, "database test");
-        testValues.put(FavoriteMoviesEntry.COLUMN_RELEASE_DATE, "2001-01-01");
-        testValues.put(FavoriteMoviesEntry.COLUMN_ORIGINAL_TITLE, "test movie");
+        testValues.put(MoviesEntry.COLUMN_MOVIE_ID, "001");
+        testValues.put(MoviesEntry.COLUMN_TITLE, "movie test");
+        testValues.put(MoviesEntry.COLUMN_VOTE_AVERAGE, 2.5);
+        testValues.put(MoviesEntry.COLUMN_OVERVIEW, "database test");
+        testValues.put(MoviesEntry.COLUMN_RELEASE_DATE, "2001-01-01");
+        testValues.put(MoviesEntry.COLUMN_ORIGINAL_TITLE, "test movie");
 
         long firstRowId = db.insert(
-                FavoriteMoviesEntry.TABLE_NAME,
+                MoviesEntry.TABLE_NAME,
                 null,
                 testValues);
 
         /* If the insert fails, database.insert returns -1 */
         assertNotEquals("Unable to insert into the database", -1, firstRowId);
 
-        /*
-         * Query the database and receive a Cursor.
-         */
         Cursor cursor = db.query(
-                FavoriteMoviesEntry.TABLE_NAME,
+                MoviesEntry.TABLE_NAME,
                 /* Columns; leaving this null returns every column in the table */
                 null,
                 /* Optional specification for columns in the "where" clause above */
@@ -111,7 +105,6 @@ public class DatabaseTest {
         assertTrue(emptyQueryError,
                 cursor.moveToFirst());
 
-        /* Close cursor and database */
         cursor.close();
         dbHelper.close();
     }

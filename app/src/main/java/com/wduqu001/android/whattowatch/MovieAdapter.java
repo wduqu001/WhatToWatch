@@ -19,8 +19,8 @@ import butterknife.ButterKnife;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    private List<Movie> mMovies;
     private final MovieAdapterOnClickHandler mClickHandler;
+    private List<Movie> mMovies;
 
     MovieAdapter(Activity activity) {
         mClickHandler = (MovieAdapterOnClickHandler) activity;
@@ -58,7 +58,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
                 .load(posterUri)
                 .placeholder(R.drawable.placeholder350)
                 .error(R.drawable.imagenotfoundheight)
-                 .noFade()
+                .noFade()
                 .fit()
                 .into(holder.mMovieImageView);
     }
@@ -79,7 +79,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.img_view_movie) ImageView mMovieImageView;
+        @BindView(R.id.img_view_movie)
+        ImageView mMovieImageView;
+
         MovieAdapterViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);

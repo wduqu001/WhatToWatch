@@ -23,8 +23,9 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    private final int POPULAR_MOVIES = 0;
-    private MovieAdapter mMovieAdapter;
+    private final int MOST_POPULAR = 0;
+    private final int TOP_RATED = 1;
+    private final int FAVORITES = 2;
 
     @BindView(R.id.recyclerview_movies)
     RecyclerView mRecyclerView;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator)
     ProgressBar mLoadingIndicator;
+    private MovieAdapter mMovieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns()));
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovieList(POPULAR_MOVIES);
+        loadMovieList(MOST_POPULAR);
     }
 
     /**
@@ -78,8 +80,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     /**
      * Builds url and executes QueryTask loading a list of movies from the TMDB api.
      *
-     * @param option Choose from one of the available options. (TOP_RATED, POPULAR_MOVIES)
-     *               default: POPULAR_MOVIES
+     * @param option Choose from one of the available options. (TOP_RATED, MOST_POPULAR)
+     *               default: MOST_POPULAR
      */
     private void loadMovieList(int option) {
         URL url = null;
@@ -98,10 +100,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      * Updates the title to reflect the current user's choice
      */
     private void UpdateTitle(int option) {
-        if(option == POPULAR_MOVIES){
+        if (option == MOST_POPULAR) {
             setTitle(getString(R.string.popular));
-        }
-        else {
+        } else {
             setTitle(getString(R.string.top_rated));
         }
     }
@@ -120,16 +121,22 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_top_rated) {
-            int TOP_RATED = 1;
-            loadMovieList(TOP_RATED);
-            return true;
+        if (id < 0) {
+            return false;
         }
-        if (id == R.id.action_most_popular) {
-            loadMovieList(POPULAR_MOVIES);
-            return true;
-        }
+        switch (id) {
+            case R.id.action_top_rated:
+                loadMovieList(TOP_RATED);
+                break;
 
+            case R.id.action_favorite:
+                loadMovieList(FAVORITES);
+                break;
+
+            case R.id.action_most_popular:
+                loadMovieList(MOST_POPULAR);
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 

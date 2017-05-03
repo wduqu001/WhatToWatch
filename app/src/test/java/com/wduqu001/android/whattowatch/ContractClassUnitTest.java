@@ -2,7 +2,7 @@ package com.wduqu001.android.whattowatch;
 
 import android.provider.BaseColumns;
 
-import com.wduqu001.android.whattowatch.data.FavoriteMoviesContract;
+import com.wduqu001.android.whattowatch.data.MoviesContract;
 
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ public class ContractClassUnitTest {
 
     @Test
     public void inner_class_type_correct() throws Exception {
-        Class[] innerClasses = FavoriteMoviesContract.class.getDeclaredClasses();
+        Class[] innerClasses = MoviesContract.class.getDeclaredClasses();
         assertEquals("Cannot find inner class to complete unit test", 1, innerClasses.length);
         Class entryClass = innerClasses[0];
         assertTrue("Inner class should implement the BaseColumns interface", BaseColumns.class.isAssignableFrom(entryClass));
@@ -26,7 +26,7 @@ public class ContractClassUnitTest {
 
     @Test
     public void inner_class_members_correct() throws Exception {
-        Class[] innerClasses = FavoriteMoviesContract.class.getDeclaredClasses();
+        Class[] innerClasses = MoviesContract.class.getDeclaredClasses();
         assertEquals("Cannot find inner class to complete unit test", 1, innerClasses.length);
         Class entryClass = innerClasses[0];
         Field[] allFields = entryClass.getDeclaredFields();

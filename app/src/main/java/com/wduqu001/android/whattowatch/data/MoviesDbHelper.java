@@ -5,17 +5,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import static android.provider.BaseColumns._ID;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.FavoriteMoviesEntry.COLUMN_BACKDROP_PATH;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.FavoriteMoviesEntry.COLUMN_MOVIE_ID;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.FavoriteMoviesEntry.COLUMN_ORIGINAL_TITLE;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.FavoriteMoviesEntry.COLUMN_OVERVIEW;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.FavoriteMoviesEntry.COLUMN_POSTER_PATH;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.FavoriteMoviesEntry.COLUMN_RELEASE_DATE;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.FavoriteMoviesEntry.COLUMN_TITLE;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.FavoriteMoviesEntry.COLUMN_VOTE_AVERAGE;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.FavoriteMoviesEntry.TABLE_NAME;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_BACKDROP_PATH;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_MOVIE_ID;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_ORIGINAL_TITLE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_OVERVIEW;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_POSTER_PATH;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_TITLE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.TABLE_NAME;
 
-public class FavoriteMoviesDbHelper extends SQLiteOpenHelper {
+public class MoviesDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "waitlist.db";
     private static final int DATABASE_VERSION = 1;
@@ -35,7 +35,7 @@ public class FavoriteMoviesDbHelper extends SQLiteOpenHelper {
 //    private static final String DATABASE_ALTER_NEW_COLUMN = "ALTER TABLE "
 //            + TABLE_NAME + " ADD COLUMN " + NEW_COLUMN + "  TEXT;";
 
-    public FavoriteMoviesDbHelper(Context context) {
+    public MoviesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

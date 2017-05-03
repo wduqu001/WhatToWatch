@@ -17,7 +17,6 @@ import static com.wduqu001.android.whattowatch.NetworkUtils.getResponseFromHttpU
 class MovieQueryTask extends AsyncTask<URL, Void, List<Movie>> {
     private final QueryTaskCompleteListener<List<Movie>> mTaskCompleteListener;
 
-
     MovieQueryTask(MainActivity.TaskCompleteListener listener) {
         this.mTaskCompleteListener = listener;
     }
