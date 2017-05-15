@@ -1,6 +1,7 @@
 package com.wduqu001.android.whattowatch;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -11,23 +12,23 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_POSTER_PATH;
 
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    private List<Movie> mMovies;
+    private ContentValues[] mMovies;
     private final MovieAdapterOnClickHandler mClickHandler;
 
     MovieAdapter(Activity activity) {
         mClickHandler = (MovieAdapterOnClickHandler) activity;
     }
 
-    void setMovies(List<Movie> mMovies) {
-        this.mMovies = mMovies;
+    void setMovies(ContentValues[] contentValues) {
+        this.mMovies = contentValues;
     }
 
     /**
@@ -51,9 +52,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
-        Movie movie = mMovies.get(position);
+        ContentValues movie = mMovies[position];
         final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w342";
-        Uri posterUri = Uri.parse(TMDB_IMG_URL + movie.getPosterPath()).normalizeScheme();
+        Uri posterUri = Uri.parse(TMDB_IMG_URL + movie.getAsString(COLUMN_POSTER_PATH)).normalizeScheme();
         Picasso.with(holder.mMovieImageView.getContext())
                 .load(posterUri)
                 .placeholder(R.drawable.placeholder350)
@@ -68,14 +69,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public int getItemCount() {
-        if (mMovies == null) {
+        if (mMovies == null || mMovies.length < 1) {
             return 0;
         }
-        return mMovies.size();
+        return mMovies.length;
     }
 
     interface MovieAdapterOnClickHandler {
-        void onClick(Movie movie);
+        void onClick(ContentValues movie);
     }
 
     class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -92,7 +93,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            mClickHandler.onClick(mMovies.get(adapterPosition));
+            mClickHandler.onClick(mMovies[adapterPosition]);
         }
     }
 }

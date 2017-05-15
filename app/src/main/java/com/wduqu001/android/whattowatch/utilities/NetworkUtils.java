@@ -1,8 +1,11 @@
-package com.wduqu001.android.whattowatch;
+package com.wduqu001.android.whattowatch.utilities;
 
+import android.content.ContentValues;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.util.Log;
+
+import com.wduqu001.android.whattowatch.BuildConfig;
+import com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,15 +17,13 @@ import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-class NetworkUtils {
+public class NetworkUtils {
 
     private final static String TMDB_POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
     private final static String TMDB_TOP_RATED_URL = "http://api.themoviedb.org/3/movie/top_rated";
@@ -35,28 +36,35 @@ class NetworkUtils {
      *
      * @param option Choose between "most popular movies(0)" and "top rated movies (1)"
      * @return a new url for the tmdb api
-     * @throws MalformedURLException
      */
-    static URL buildMoviesUrl(int option) throws MalformedURLException {
+    public static URL buildMoviesUrl(int option) {
         String base = TMDB_POPULAR_MOVIES_URL;
 
         if (option == 1) base = TMDB_TOP_RATED_URL;
+        try {
+            Uri builtUri = Uri.parse(base).buildUpon()
+                    .appendQueryParameter("api_key", TMDB_API_KEY)
+                    .appendQueryParameter("language", LANGUAGE)
+                    .appendQueryParameter("page", Integer.toString(PAGES))
+                    .build();
 
-        Uri builtUri = Uri.parse(base).buildUpon()
-                .appendQueryParameter("api_key", TMDB_API_KEY)
-                .appendQueryParameter("language", LANGUAGE)
-                .appendQueryParameter("page", Integer.toString(PAGES))
-                .build();
-
-        return new URL(builtUri.toString());
+            return new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    static String getResponseFromHttpUrl(URL url) throws IOException {
+    public static String getResponseFromHttpUrl(URL url) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(url).build();
-
+        try {
             Response response = client.newCall(request).execute();
             return response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -66,26 +74,27 @@ class NetworkUtils {
      * @return A list of Movies
      * @throws JSONException
      */
-    static List<Movie> getMoviesList(String StringParam) throws JSONException {
+    public static ContentValues[] getMoviesList(String StringParam) {
 
         JSONArray moviesArray;
-        List<Movie> movieList;
+        try {
+            moviesArray = new JSONObject(StringParam).getJSONArray("results");
 
-        moviesArray = new JSONObject(StringParam).getJSONArray("results");
+            if (moviesArray == null) {
+                return null;
+            }
 
-        if (moviesArray == null) {
+            ContentValues[] contentValues = new ContentValues[moviesArray.length()];
+
+            for (int i = 0; i < moviesArray.length(); i++) {
+                JSONObject movieData = moviesArray.getJSONObject(i);
+                contentValues[i] = getMovieFromJson(movieData);
+            }
+            return contentValues;
+        } catch (JSONException e) {
+            e.printStackTrace();
             return null;
         }
-        movieList = new ArrayList<>();
-
-        for (int i = 0; i < moviesArray.length(); i++) {
-
-            JSONObject movieData = moviesArray.getJSONObject(i);
-            Movie movie = getMovieFromJson(movieData);
-            movieList.add(i, movie);
-        }
-
-        return movieList;
     }
 
     /**
@@ -95,19 +104,18 @@ class NetworkUtils {
      * @return Movie
      * @throws JSONException
      */
-    @NonNull
-    private static Movie getMovieFromJson(JSONObject movieData) throws JSONException {
-        Movie movie = new Movie(
-                String.valueOf(movieData.getInt("id")),
-                movieData.getString("title"),
-                movieData.getString("poster_path"),
-                movieData.getString("backdrop_path")
-        );
-        movie.setOriginalTitle(movieData.getString("original_title"));
-        movie.setOverview(movieData.getString("overview"));
-        movie.setVote_average(movieData.getDouble("vote_average"));
-        movie.setRelease_date(movieData.getString("release_date"));
-        return movie;
+    private static ContentValues getMovieFromJson(JSONObject movieData) throws JSONException {
+        ContentValues movieValues = new ContentValues();
+        movieValues.put(MoviesEntry.COLUMN_MOVIE_ID, movieData.getString("id"));
+        movieValues.put(MoviesEntry.COLUMN_TITLE, movieData.getString("title"));
+        movieValues.put(MoviesEntry.COLUMN_BACKDROP_PATH, movieData.getString("backdrop_path"));
+        movieValues.put(MoviesEntry.COLUMN_ORIGINAL_TITLE, movieData.getString("original_title"));
+        movieValues.put(MoviesEntry.COLUMN_OVERVIEW, movieData.getString("overview"));
+        movieValues.put(MoviesEntry.COLUMN_POSTER_PATH, movieData.getString("poster_path"));
+        movieValues.put(MoviesEntry.COLUMN_RELEASE_DATE, movieData.getString("release_date"));
+        movieValues.put(MoviesEntry.COLUMN_VOTE_AVERAGE, movieData.getString("vote_average"));
+
+        return movieValues;
     }
 
     /**
@@ -116,7 +124,7 @@ class NetworkUtils {
      *
      * @return false if internet connection is not available
      */
-    static boolean isOnline() {
+    public static boolean isOnline() {
         int timeoutMs = 3500;
         Socket socket = new Socket();
         try {

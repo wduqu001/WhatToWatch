@@ -1,5 +1,6 @@
 package com.wduqu001.android.whattowatch;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
@@ -10,6 +11,13 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_BACKDROP_PATH;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_ORIGINAL_TITLE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_OVERVIEW;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_TITLE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE;
 
 public class MovieDetail extends AppCompatActivity {
 
@@ -26,24 +34,24 @@ public class MovieDetail extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
 
-        Movie movie = getIntent().getParcelableExtra("movie");
+        ContentValues movie = getIntent().getParcelableExtra("movie");
         String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
         Picasso.with(this)
-                .load(TMDB_IMG_URL + movie.getBackdropPath())
+                .load(TMDB_IMG_URL + movie.getAsString(COLUMN_BACKDROP_PATH))
                 .placeholder(R.drawable.placeholder350)
                 .error(R.drawable.imagenotfound)
                 .noFade()
                 .fit()
                 .into(mThumbnail);
 
-        setTitle(movie.getTitle());
+        setTitle(movie.getAsString(COLUMN_TITLE));
 
-        mTitle.setText(movie.getOriginalTitle());
-        if (!movie.getOverview().isEmpty()) mOverview.setText(movie.getOverview());
-        String year;
-        year = movie.getRelease_date() == null || movie.getRelease_date().isEmpty() ? "" : String.format("( %s )", movie.getRelease_date().substring(0, 4));
+        mTitle.setText(movie.getAsString(COLUMN_ORIGINAL_TITLE));
+        mOverview.setText(movie.getAsString(COLUMN_OVERVIEW));
+        String date = movie.getAsString(COLUMN_RELEASE_DATE);
+        String year = date == null || date.isEmpty() ? "" : String.format("( %s )", date.substring(0, 4));
         mYearOfRelease.setText(year);
-        mRating.setRating((float) movie.getVote_average() / 2);
+        mRating.setRating((float) ( movie.getAsDouble(COLUMN_VOTE_AVERAGE) / 2));
 
     }
 }

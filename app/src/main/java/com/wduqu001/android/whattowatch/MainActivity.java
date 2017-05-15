@@ -1,9 +1,9 @@
 package com.wduqu001.android.whattowatch;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,10 +15,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.net.MalformedURLException;
+import com.wduqu001.android.whattowatch.utilities.NetworkUtils;
+
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     ProgressBar mLoadingIndicator;
     private int mOption;
     private MovieAdapter mMovieAdapter;
-    private List<Movie> mMovieList;
+    private ContentValues[] mMovieContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +48,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         // recovering the instance state
         if (savedInstanceState != null) {
-            mMovieList = savedInstanceState.getParcelableArrayList("movies");
+            mMovieContent = (ContentValues[]) savedInstanceState.getParcelableArray("movies");
             mOption = savedInstanceState.getInt("option");
-            updateView(mMovieList);
+            updateView(mMovieContent);
         } else {
             mOption = POPULAR_MOVIES;
             loadMovieList();
@@ -91,13 +90,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      * Builds url and executes QueryTask loading a list of movies from the TMDB api.
      */
     private void loadMovieList() {
-        URL url = null;
-        try {
-            url = NetworkUtils.buildMoviesUrl(mOption);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            showErrorMessage();
-        }
+        URL url;
+        url = NetworkUtils.buildMoviesUrl(mOption);
         showLoading(View.VISIBLE);
         new MovieQueryTask(new TaskCompleteListener()).execute(url);
     }
@@ -131,23 +125,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     @Override
-    public void onClick(Movie movie) {
+    public void onClick(ContentValues movieContent) {
         Context context = this;
         Class destinationActivity = MovieDetail.class;
 
         Intent intent = new Intent(context, destinationActivity);
-        intent.putExtra("movie", movie);
+        intent.putExtra("movie", movieContent);
         startActivity(intent);
     }
 
-    private void updateView(List<Movie> movieList) {
+    private void updateView(ContentValues[] contentValues) {
         showLoading(View.INVISIBLE);
-        if (movieList == null || movieList.isEmpty()) {
+        if (contentValues == null || contentValues.length < 1) {
             showErrorMessage();
             return;
         }
-        mMovieList = movieList;
-        mMovieAdapter.setMovies(mMovieList);
+        mMovieContent = contentValues;
+        mMovieAdapter.setMovies(mMovieContent);
         mMovieAdapter.notifyDataSetChanged();
         UpdateTitle();
         showMovieDataView();
@@ -155,19 +149,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList("movies", (ArrayList<? extends Parcelable>) mMovieList);
+        outState.putParcelableArray("movies", mMovieContent);
         outState.putInt("option", mOption);
         super.onSaveInstanceState(outState);
     }
 
-    class TaskCompleteListener implements QueryTaskCompleteListener<List<Movie>> {
+    class TaskCompleteListener implements QueryTaskCompleteListener<ContentValues[]> {
         /**
          * Invoked when the AsyncTask has completed its execution.
          *
          * @param result The resulting object from the AsyncTask.
          */
         @Override
-        public void onTaskComplete(List<Movie> result) {
+        public void onTaskComplete(ContentValues[] result) {
             updateView(result);
         }
     }
