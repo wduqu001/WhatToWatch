@@ -1,8 +1,10 @@
 package com.wduqu001.android.whattowatch;
 
-import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,24 +12,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
+import com.wduqu001.android.whattowatch.data.MoviesContract;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
-
+    // TODO: CLEANUP
+    private final Context mContext;
     private final MovieAdapterOnClickHandler mClickHandler;
-    private List<Movie> mMovies;
+    private Cursor mCursor;
 
-    MovieAdapter(Activity activity) {
-        mClickHandler = (MovieAdapterOnClickHandler) activity;
-    }
+    private ContentValues[] mMovies;
 
-    void setMovies(List<Movie> mMovies) {
-        this.mMovies = mMovies;
+    MovieAdapter(@NonNull Context context, MovieAdapterOnClickHandler clickHandler) {
+        mContext = context;
+        mClickHandler = clickHandler;
     }
 
     /**
@@ -36,12 +37,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        int layoutIdForListItem = R.layout.movies_item;
-        LayoutInflater inflater = LayoutInflater.from(context);
         final boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, parent, shouldAttachToParentImmediately);
+        View view = LayoutInflater
+                .from(mContext)
+                .inflate(R.layout.movies_item, parent, shouldAttachToParentImmediately);
         return new MovieAdapterViewHolder(view);
     }
 
@@ -51,9 +51,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
-        Movie movie = mMovies.get(position);
+        mCursor.moveToPosition(position);
+        String posterPath = mCursor.getString(mCursor.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_POSTER_PATH));
         final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w342";
-        Uri posterUri = Uri.parse(TMDB_IMG_URL + movie.getPosterPath()).normalizeScheme();
+        Uri posterUri = Uri.parse(TMDB_IMG_URL + posterPath).normalizeScheme();
         Picasso.with(holder.mMovieImageView.getContext())
                 .load(posterUri)
                 .placeholder(R.drawable.placeholder350)
@@ -68,14 +69,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
      */
     @Override
     public int getItemCount() {
-        if (mMovies == null) {
-            return 0;
-        }
-        return mMovies.size();
+        if (mCursor == null) return 0;
+        return mCursor.getCount();
+    }
+
+    @Deprecated
+    void setMovies(ContentValues[] values) {
+        this.mMovies = values;
+    }
+
+    public void swapCursor(Cursor newCursor) {
+        mCursor = newCursor;
+        notifyDataSetChanged();
     }
 
     interface MovieAdapterOnClickHandler {
-        void onClick(Movie movie);
+        void onClick(int movieId);
     }
 
     class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -93,8 +102,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
          */
         @Override
         public void onClick(View view) {
-            int adapterPosition = getAdapterPosition();
-            mClickHandler.onClick(mMovies.get(adapterPosition));
+            int position = getAdapterPosition();
+            mCursor.moveToPosition(position);
+            mClickHandler.onClick(mCursor.getInt(mCursor.getColumnIndex(MoviesContract.MoviesEntry.COLUMN_MOVIE_ID)));
         }
     }
 }

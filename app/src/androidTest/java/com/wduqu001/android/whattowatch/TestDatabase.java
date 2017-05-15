@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.test.InstrumentationRegistry;
 
-import com.wduqu001.android.whattowatch.data.MoviesDbHelper;
 import com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry;
+import com.wduqu001.android.whattowatch.data.MoviesDbHelper;
 
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DatabaseTest {
+public class TestDatabase {
 
     private final Context mContext = InstrumentationRegistry.getTargetContext();
 
@@ -101,7 +101,7 @@ public class DatabaseTest {
                 null);
 
         /* Cursor.moveToFirst will return false if there are no records returned from the query */
-        String emptyQueryError = "Error: No Records returned from FavoriteMovies query";
+        String emptyQueryError = "Error: No Records returned from the query";
         assertTrue(emptyQueryError,
                 cursor.moveToFirst());
 

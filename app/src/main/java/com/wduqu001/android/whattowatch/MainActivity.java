@@ -1,8 +1,14 @@
 package com.wduqu001.android.whattowatch;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,19 +20,22 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.net.MalformedURLException;
+import com.wduqu001.android.whattowatch.data.MoviesContract;
+import com.wduqu001.android.whattowatch.sync.MovieQueryTask;
+import com.wduqu001.android.whattowatch.sync.QueryTaskCompleteListener;
+import com.wduqu001.android.whattowatch.utilities.NetworkUtils;
+
 import java.net.URL;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler, LoaderCallbacks<Cursor> {
 
+    private static final int LOADER_ID = 0;
     private final int MOST_POPULAR = 0;
     private final int TOP_RATED = 1;
     private final int FAVORITES = 2;
-
     @BindView(R.id.recyclerview_movies)
     RecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display)
@@ -41,7 +50,16 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        mMovieAdapter = new MovieAdapter(this);
+        LoaderCallbacks<Cursor> callback = MainActivity.this;
+
+        /*
+         * Ensures a loader is initialized and active. If the loader doesn't already exist, one is
+         * created and (if the activity/fragment is currently started) starts the loader. Otherwise
+         * the last created loader is re-used.
+         */
+        getSupportLoaderManager().initLoader(LOADER_ID, null, callback);
+
+        mMovieAdapter = new MovieAdapter(this, this);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns()));
         mRecyclerView.setAdapter(mMovieAdapter);
 
@@ -84,13 +102,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      *               default: MOST_POPULAR
      */
     private void loadMovieList(int option) {
-        URL url = null;
-        try {
-            url = NetworkUtils.buildMoviesUrl(option);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            showErrorMessage();
-        }
+        // TODO: Load favorite movie list from database
+        URL url = NetworkUtils.buildMoviesUrl(option);
         showLoading(View.VISIBLE);
         new MovieQueryTask(new TaskCompleteListener()).execute(url);
         UpdateTitle(option);
@@ -140,30 +153,68 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         return super.onOptionsItemSelected(item);
     }
 
+    //    @Override
+//    public void onClick(Movie movie) {
+//        Context context = this;
+//        Class destinationActivity = MovieDetail.class;
+//
+//        Intent intent = new Intent(context, destinationActivity);
+//        intent.putExtra("movie", movie);
+//        startActivity(intent);
+//    }
     @Override
-    public void onClick(Movie movie) {
+    public void onClick(int movieId) {
         Context context = this;
         Class destinationActivity = MovieDetail.class;
 
         Intent intent = new Intent(context, destinationActivity);
-        intent.putExtra("movie", movie);
+        intent.putExtra("movieId", movieId);
         startActivity(intent);
     }
 
-    class TaskCompleteListener implements QueryTaskCompleteListener<List<Movie>> {
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
+        if (loaderId == LOADER_ID) {
+            Uri queryUri = MoviesContract.MoviesEntry.CONTENT_URI;
+            String sortOrder = "";
+            String selection = "";
+
+            return new CursorLoader(this,
+                    queryUri,
+                    null,
+                    selection,
+                    null,
+                    sortOrder
+            );
+        } else {
+            throw new RuntimeException("Loader Not Implemented: " + loaderId);
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mMovieAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMovieAdapter.swapCursor(null);
+    }
+
+    public class TaskCompleteListener implements QueryTaskCompleteListener<ContentValues[]> {
         /**
          * Invoked when the AsyncTask has completed its execution.
          *
-         * @param result The resulting object from the AsyncTask.
+         * @param values The resulting object from the AsyncTask.
          */
         @Override
-        public void onTaskComplete(List<Movie> result) {
+        public void onTaskComplete(ContentValues[] values) {
             showLoading(View.INVISIBLE);
-            if (result == null || result.isEmpty()) {
+            if (values == null || values.length < 1) {
                 showErrorMessage();
                 return;
             }
-            mMovieAdapter.setMovies(result);
+            mMovieAdapter.setMovies(values);
             mMovieAdapter.notifyDataSetChanged();
             showMovieDataView();
         }

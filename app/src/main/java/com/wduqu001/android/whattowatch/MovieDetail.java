@@ -14,11 +14,16 @@ import butterknife.ButterKnife;
 public class MovieDetail extends AppCompatActivity {
 
     // Automatically finds each field by the specified ID.
-    @BindView(R.id.img_thumbnail) ImageView mThumbnail;
-    @BindView(R.id.tv_title) TextView mTitle;
-    @BindView(R.id.tv_yearOfRelease) TextView mYearOfRelease;
-    @BindView(R.id.rb_voteAverage) RatingBar mRating;
-    @BindView(R.id.tv_overview) TextView mOverview;
+    @BindView(R.id.img_thumbnail)
+    ImageView mThumbnail;
+    @BindView(R.id.tv_title)
+    TextView mTitle;
+    @BindView(R.id.tv_yearOfRelease)
+    TextView mYearOfRelease;
+    @BindView(R.id.rb_voteAverage)
+    RatingBar mRating;
+    @BindView(R.id.tv_overview)
+    TextView mOverview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +31,9 @@ public class MovieDetail extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
 
-        Movie movie = getIntent().getParcelableExtra("movie");
+        Movie movie = getIntent().getParcelableExtra("movieId");
+        //TODO: fetch the movieData using the movieId and the db
+        //TODO: Change the movie object to a contentValues object
         String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
         Picasso.with(this)
                 .load(TMDB_IMG_URL + movie.getBackdropPath())

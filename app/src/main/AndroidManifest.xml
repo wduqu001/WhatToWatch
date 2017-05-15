@@ -21,6 +21,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".MovieDetail" />
+        <provider
+            android:name=".data.MoviesContentProvider"
+            android:authorities="com.wduqu001.android.whattowatch"
+            android:exported="false"/>
     </application>
 
 </manifest>

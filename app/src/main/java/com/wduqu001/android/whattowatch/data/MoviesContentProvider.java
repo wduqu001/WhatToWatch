@@ -11,12 +11,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import static android.R.attr.id;
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.TABLE_NAME;
 
 public class MoviesContentProvider extends ContentProvider {
     // Define final integer constants for the directory of movies and a single item.
     public static final int MOVIES = 100;
-    public static final int MOVIE_WITH_ID = 101;
+    public static final int MOVIES_WITH_ID = 101;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MoviesDbHelper mDbHelper;
@@ -32,7 +33,7 @@ public class MoviesContentProvider extends ContentProvider {
           The two calls below add matches for the task directory and a single item by ID.
          */
         uriMatcher.addURI(MoviesContract.AUTHORITY, MoviesContract.PATH_MOVIES, MOVIES);
-        uriMatcher.addURI(MoviesContract.AUTHORITY, MoviesContract.PATH_MOVIES + "/#", MOVIE_WITH_ID);
+        uriMatcher.addURI(MoviesContract.AUTHORITY, MoviesContract.PATH_MOVIES + "/#", MOVIES_WITH_ID);
 
         return uriMatcher;
     }
@@ -60,6 +61,17 @@ public class MoviesContentProvider extends ContentProvider {
                         projection,
                         selection,
                         selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case MOVIES_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+
+                retCursor = db.query(TABLE_NAME,
+                        projection,
+                        "_id=?",
+                        new String[]{id},
                         null,
                         null,
                         sortOrder);
@@ -107,7 +119,7 @@ public class MoviesContentProvider extends ContentProvider {
         int tasksDeleted;
 
         switch (match) {
-            case MOVIE_WITH_ID:
+            case MOVIES_WITH_ID:
                 String id = uri.getPathSegments().get(1);
                 tasksDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
                 break;
@@ -124,7 +136,22 @@ public class MoviesContentProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        int moviesUpdated;
+        int match = sUriMatcher.match(uri);
+
+        switch (match) {
+            case MOVIES_WITH_ID:
+                String id = uri.getPathSegments().get(1);
+                moviesUpdated = mDbHelper.getWritableDatabase().update(TABLE_NAME, values, "_id=?", new String[]{id});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        if (moviesUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return moviesUpdated;
     }
 
     @Nullable
