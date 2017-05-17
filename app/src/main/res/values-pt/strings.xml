@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">O Que assistir</string>
     <string name="error_message">Lamentamos, ocorreu um problema. Por favor, verifique sua conexão com a rede e tente novamente.</string>
-    <string name="not_available">Não temos uma descrição traduzida em portugues para este título no momento. Ajude-nos a expandir o nosso banco de dados. Acesse o site https://www.themoviedb.org/contribute e faça parte de nosso time.</string>
+    <string name="not_available">Não temos uma descrição em portugues para este título no momento. Ajude-nos a expandir o nosso banco de dados. Acesse o site https://www.themoviedb.org/contribute e faça parte de nosso time.</string>
     <string name="overview">Sinopse</string>
     <string name="top_rated">Mais bem avaliados</string>
     <string name="popular">Mais populares</string>

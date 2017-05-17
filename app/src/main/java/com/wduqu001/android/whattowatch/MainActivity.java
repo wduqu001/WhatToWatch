@@ -15,10 +15,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.wduqu001.android.whattowatch.utilities.NetworkUtils;
-
-import java.net.URL;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -90,10 +86,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      * Builds url and executes QueryTask loading a list of movies from the TMDB api.
      */
     private void loadMovieList() {
-        URL url;
-        url = NetworkUtils.buildMoviesUrl(mOption);
         showLoading(View.VISIBLE);
-        new MovieQueryTask(new TaskCompleteListener()).execute(url);
+        new MovieQueryTask(new TaskCompleteListener()).execute(mOption);
     }
 
     /**

@@ -53,13 +53,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
         ContentValues movie = mMovies[position];
-        final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w342";
+        final String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
         Uri posterUri = Uri.parse(TMDB_IMG_URL + movie.getAsString(COLUMN_POSTER_PATH)).normalizeScheme();
         Picasso.with(holder.mMovieImageView.getContext())
                 .load(posterUri)
-                .placeholder(R.drawable.placeholder350)
                 .error(R.drawable.imagenotfoundheight)
-                 .noFade()
                 .fit()
                 .into(holder.mMovieImageView);
     }

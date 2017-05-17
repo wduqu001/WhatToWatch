@@ -13,7 +13,7 @@ import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.getRespons
 /**
  * Task responsive for Querying the api for movie data
  */
-public class MovieQueryTask extends AsyncTask<URL, Void, ContentValues[]> {
+public class MovieQueryTask extends AsyncTask<Integer, Void, ContentValues[]> {
     private final QueryTaskCompleteListener<ContentValues[]> mTaskCompleteListener;
 
     public MovieQueryTask(MainActivity.TaskCompleteListener listener) {
@@ -26,10 +26,11 @@ public class MovieQueryTask extends AsyncTask<URL, Void, ContentValues[]> {
      * by the caller of this task.
      */
     @Override
-    protected ContentValues[] doInBackground(URL... params) {
-        URL url = params[0];
+    protected ContentValues[] doInBackground(Integer... params) {
+        int option = params[0];
         String moviesApiResult;
         if (NetworkUtils.isOnline()) {
+            URL url = NetworkUtils.buildMoviesUrl(option);
             moviesApiResult = getResponseFromHttpUrl(url);
             return getMoviesList(moviesApiResult);
         }

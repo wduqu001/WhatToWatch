@@ -2,12 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_top_rated"
-        android:icon="@android:drawable/arrow_up_float"
         android:orderInCategory="1"
         android:title="@string/top_rated" />
     <item
         android:id="@+id/action_most_popular"
-        android:icon="@android:drawable/arrow_down_float"
         android:orderInCategory="2"
         android:title="@string/popular" />
+    <item
+        android:id="@+id/action_favorite"
+        android:orderInCategory="3"
+        android:title="@string/favorites" />
 </menu>
