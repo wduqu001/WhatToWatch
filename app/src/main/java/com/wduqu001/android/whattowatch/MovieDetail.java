@@ -1,6 +1,7 @@
 package com.wduqu001.android.whattowatch;
 
 import android.content.ContentValues;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -26,13 +27,21 @@ import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.C
 public class MovieDetail extends AppCompatActivity {
 
     // Automatically finds each field by the specified ID.
-    @BindView(R.id.img_thumbnail) ImageView mThumbnail;
-    @BindView(R.id.img_poster) ImageView mPoster;
-    @BindView(R.id.tv_title) TextView mTitle;
-    @BindView(R.id.tv_yearOfRelease) TextView mYearOfRelease;
-    @BindView(R.id.rb_voteAverage) RatingBar mRating;
-    @BindView(R.id.tv_overview) TextView mOverview;
-    private  static ContentValues mMovieContent;
+    @BindView(R.id.img_thumbnail)
+    ImageView mThumbnailImageView;
+    @BindView(R.id.img_poster)
+    ImageView mPosterImageView;
+    @BindView(R.id.tv_title)
+    TextView mTitleTextView;
+    @BindView(R.id.tv_yearOfRelease)
+    TextView mYearOfReleaseTextView;
+    @BindView(R.id.rb_voteAverage)
+    RatingBar mRatingRatingBar;
+    @BindView(R.id.tv_overview)
+    TextView mOverviewTextView;
+    @BindView(R.id.tv_review)
+    TextView mReviewTextView;
+    private static ContentValues mMovieContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,10 @@ public class MovieDetail extends AppCompatActivity {
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
 
+        loadMovieContent();
+    }
+
+    private void loadMovieContent() {
         mMovieContent = getIntent().getParcelableExtra("movie");
         String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
 
@@ -47,27 +60,38 @@ public class MovieDetail extends AppCompatActivity {
                 .load(TMDB_IMG_URL + mMovieContent.getAsString(COLUMN_BACKDROP_PATH))
                 .error(R.drawable.imagenotfound)
                 .fit()
-                .into(mThumbnail);
+                .into(mThumbnailImageView);
 
         Picasso.with(this)
                 .load(TMDB_IMG_URL + mMovieContent.getAsString(COLUMN_POSTER_PATH))
                 .error(R.drawable.imagenotfound)
                 .fit()
-                .into(mPoster);
+                .into(mPosterImageView);
 
         setTitle(mMovieContent.getAsString(COLUMN_TITLE));
 
-        mTitle.setText(mMovieContent.getAsString(COLUMN_ORIGINAL_TITLE));
-        mOverview.setText(mMovieContent.getAsString(COLUMN_OVERVIEW));
+        mTitleTextView.setText(mMovieContent.getAsString(COLUMN_ORIGINAL_TITLE));
+        mOverviewTextView.setText(mMovieContent.getAsString(COLUMN_OVERVIEW));
         String date = mMovieContent.getAsString(COLUMN_RELEASE_DATE);
         String year = date == null || date.isEmpty() ? "" : String.format("( %s )", date.substring(0, 4));
-        mYearOfRelease.setText(year);
-        mRating.setRating((float) ( mMovieContent.getAsDouble(COLUMN_VOTE_AVERAGE) / 2));
-
+        mYearOfReleaseTextView.setText(year);
+        mRatingRatingBar.setRating((float) (mMovieContent.getAsDouble(COLUMN_VOTE_AVERAGE) / 2));
     }
+
     // TODO: Store selected movie on database
-    public void AddToWatchList(View view) {
+    public void addToWatchList(View view) {
         String movieId = mMovieContent.getAsString(COLUMN_MOVIE_ID);
         Toast.makeText(this, mMovieContent.getAsString(COLUMN_TITLE) + movieId, Toast.LENGTH_SHORT).show();
+    }
+    public void getMovieReview(){
+
+    }
+
+    private class MovieExtraContent extends AsyncTask<Integer, Void, ContentValues[]> {
+
+        @Override
+        protected ContentValues[] doInBackground(Integer... params) {
+            return new ContentValues[0];
+        }
     }
 }

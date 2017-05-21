@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/movie_detail_view"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -56,7 +57,7 @@
                 android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
                 android:clickable="true"
-                android:onClick="AddToWatchList"
+                android:onClick="addToWatchList"
                 android:contentDescription="@string/favorite_button"
                 app:layout_constraintLeft_toLeftOf="@+id/guideline"
                 app:layout_constraintTop_toBottomOf="@+id/img_thumbnail"

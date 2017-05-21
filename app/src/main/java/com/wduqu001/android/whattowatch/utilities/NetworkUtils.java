@@ -25,24 +25,27 @@ import okhttp3.Response;
 
 public class NetworkUtils {
 
-    private final static String TMDB_POPULAR_MOVIES_URL = "https://api.themoviedb.org/3/movie/popular";
-    private final static String TMDB_TOP_RATED_URL = "http://api.themoviedb.org/3/movie/top_rated";
+    public final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
     private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
     private final static String LANGUAGE = Locale.getDefault().getLanguage().concat("-").concat(Locale.getDefault().getCountry());
     private final static int PAGES = 1;
+    public final static String POPULAR = "popular";
+    public final static String TOP_RATED = "top_rated";
+    final static String REVIEWS = "reviews";
+    final static String VIDEOS = "videos";
 
     /**
-     * * Builds a url for PopularMovies
+     * * Builds a url to query movie data
      *
-     * @param option Choose between "most popular movies(0)" and "top rated movies (1)"
+     * @param option Selected content to be requested from the api"
      * @return a new url for the tmdb api
      */
-    public static URL buildMoviesUrl(int option) {
-        String base = TMDB_POPULAR_MOVIES_URL;
+    public static URL buildMoviesUrl(String option) {
 
-        if (option == 1) base = TMDB_TOP_RATED_URL;
+        if (option.isEmpty()) option = POPULAR;
         try {
-            Uri builtUri = Uri.parse(base).buildUpon()
+            Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                    .appendPath(option)
                     .appendQueryParameter("api_key", TMDB_API_KEY)
                     .appendQueryParameter("language", LANGUAGE)
                     .appendQueryParameter("page", Integer.toString(PAGES))
@@ -68,11 +71,10 @@ public class NetworkUtils {
     }
 
     /**
-     * Builds a object of type List<Movie> from a String ( resulted from a http request)
+     * Builds a object of type ContentValues[] with movies content from a String ( resulted from a http request)
      *
      * @param StringParam http result in a String
-     * @return A list of Movies
-     * @throws JSONException
+     * @return A list of movies
      */
     public static ContentValues[] getMoviesList(String StringParam) {
 
@@ -98,10 +100,10 @@ public class NetworkUtils {
     }
 
     /**
-     * Creates a Movie object from JSON
+     * Creates a ContentValues with Movie content from JSON
      *
      * @param movieData JSONObject from with Movie will be extracted
-     * @return Movie
+     * @return ContentValues
      * @throws JSONException
      */
     private static ContentValues getMovieFromJson(JSONObject movieData) throws JSONException {

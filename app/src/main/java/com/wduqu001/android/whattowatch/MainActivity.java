@@ -18,17 +18,18 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.POPULAR;
+import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.TOP_RATED;
+
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    private static final int TOP_RATED = 1;
-    private final int POPULAR_MOVIES = 0;
     @BindView(R.id.recyclerview_movies)
     RecyclerView mRecyclerView;
     @BindView(R.id.tv_error_message_display)
     TextView mErrorMessageDisplay;
     @BindView(R.id.pb_loading_indicator)
     ProgressBar mLoadingIndicator;
-    private int mOption;
+    private String mOption;
     private MovieAdapter mMovieAdapter;
     private ContentValues[] mMovieContent;
 
@@ -45,10 +46,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         // recovering the instance state
         if (savedInstanceState != null) {
             mMovieContent = (ContentValues[]) savedInstanceState.getParcelableArray("movies");
-            mOption = savedInstanceState.getInt("option");
+            mOption = savedInstanceState.getString("option");
             updateView(mMovieContent);
         } else {
-            mOption = POPULAR_MOVIES;
+            mOption = POPULAR;
             loadMovieList();
         }
     }
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      * Updates the title to reflect the current user's choice
      */
     private void UpdateTitle() {
-        if (mOption == POPULAR_MOVIES) {
+        if (mOption.equals(POPULAR)) {
             setTitle(getString(R.string.popular));
         } else {
             setTitle(getString(R.string.top_rated));
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        mOption = (item.getItemId() == R.id.action_top_rated ? TOP_RATED : POPULAR_MOVIES);
+        mOption = (item.getItemId() == R.id.action_top_rated ? TOP_RATED : POPULAR);
         loadMovieList();
         return super.onOptionsItemSelected(item);
     }
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArray("movies", mMovieContent);
-        outState.putInt("option", mOption);
+        outState.putString("option", mOption);
         super.onSaveInstanceState(outState);
     }
 
