@@ -7,7 +7,7 @@ import com.wduqu001.android.whattowatch.utilities.NetworkUtils;
 
 import java.net.URL;
 
-import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.getMoviesList;
+import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.getMoviesContent;
 import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.getResponseFromHttpUrl;
 
 /**
@@ -16,7 +16,7 @@ import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.getRespons
 public class MovieQueryTask extends AsyncTask<String, Void, ContentValues[]> {
     private final QueryTaskCompleteListener<ContentValues[]> mTaskCompleteListener;
 
-    public MovieQueryTask(MainActivity.TaskCompleteListener listener) {
+    MovieQueryTask(QueryTaskCompleteListener<ContentValues[]> listener) {
         this.mTaskCompleteListener = listener;
     }
 
@@ -28,11 +28,10 @@ public class MovieQueryTask extends AsyncTask<String, Void, ContentValues[]> {
     @Override
     protected ContentValues[] doInBackground(String... params) {
         String option = params[0];
-        String moviesApiResult;
         if (NetworkUtils.isOnline()) {
             URL url = NetworkUtils.buildMoviesUrl(option);
-            moviesApiResult = getResponseFromHttpUrl(url);
-            return getMoviesList(moviesApiResult);
+            String moviesApiResult = getResponseFromHttpUrl(url);
+            return getMoviesContent(moviesApiResult, option);
         }
         return null;
     }

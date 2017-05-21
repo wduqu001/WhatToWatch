@@ -9,18 +9,6 @@ import android.os.Parcelable;
 
 public class Movie implements Parcelable {
 
-    @SuppressWarnings("unused")
-    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
-        }
-
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
     private final String mMovieId;
     private final String mTitle;
     private final String mPosterPath;
@@ -29,13 +17,6 @@ public class Movie implements Parcelable {
     private String mOverview;
     private String mReleaseDate;
     private String mOriginalTitle;
-
-    public Movie(String movieId, String title, String posterPath, String backdropPath) {
-        this.mMovieId = movieId;
-        this.mTitle = title;
-        this.mPosterPath = posterPath;
-        this.mBackdropPath = backdropPath;
-    }
 
     private Movie(Parcel in) {
         mMovieId = in.readString();
@@ -47,6 +28,18 @@ public class Movie implements Parcelable {
         mReleaseDate = in.readString();
         mOriginalTitle = in.readString();
     }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     @Override
     public int describeContents() {
@@ -70,49 +63,5 @@ public class Movie implements Parcelable {
         dest.writeString(mOverview);
         dest.writeString(mReleaseDate);
         dest.writeString(mOriginalTitle);
-    }
-
-    public String getTitle() {
-        return mTitle;
-    }
-
-    public String getPosterPath() {
-        return mPosterPath;
-    }
-
-    public String getBackdropPath() {
-        return mBackdropPath;
-    }
-
-    public double getVote_average() {
-        return mVoteAverage;
-    }
-
-    public void setVote_average(double vote_average) {
-        this.mVoteAverage = vote_average;
-    }
-
-    public String getOverview() {
-        return mOverview;
-    }
-
-    public void setOverview(String overview) {
-        this.mOverview = overview;
-    }
-
-    public String getRelease_date() {
-        return mReleaseDate;
-    }
-
-    public void setRelease_date(String release_date) {
-        this.mReleaseDate = release_date;
-    }
-
-    public String getOriginalTitle() {
-        return mOriginalTitle;
-    }
-
-    public void setOriginalTitle(String originalTitle) {
-        this.mOriginalTitle = originalTitle;
     }
 }

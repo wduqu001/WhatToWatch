@@ -1,7 +1,6 @@
 package com.wduqu001.android.whattowatch;
 
 import android.content.ContentValues;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -42,6 +41,8 @@ public class MovieDetail extends AppCompatActivity {
     @BindView(R.id.tv_review)
     TextView mReviewTextView;
     private static ContentValues mMovieContent;
+    private static ContentValues[] mReviewsContent;
+    private static ContentValues[] mVideosContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,16 +83,5 @@ public class MovieDetail extends AppCompatActivity {
     public void addToWatchList(View view) {
         String movieId = mMovieContent.getAsString(COLUMN_MOVIE_ID);
         Toast.makeText(this, mMovieContent.getAsString(COLUMN_TITLE) + movieId, Toast.LENGTH_SHORT).show();
-    }
-    public void getMovieReview(){
-
-    }
-
-    private class MovieExtraContent extends AsyncTask<Integer, Void, ContentValues[]> {
-
-        @Override
-        protected ContentValues[] doInBackground(Integer... params) {
-            return new ContentValues[0];
-        }
     }
 }

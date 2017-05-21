@@ -31,16 +31,17 @@ public class NetworkUtils {
     private final static int PAGES = 1;
     public final static String POPULAR = "popular";
     public final static String TOP_RATED = "top_rated";
-    final static String REVIEWS = "reviews";
-    final static String VIDEOS = "videos";
+    public final static String REVIEWS = "reviews";
+    public final static String VIDEOS = "videos";
 
     /**
      * * Builds a url to query movie data
      *
-     * @param option Selected content to be requested from the api"
+     * @param params Selected content to be requested from the api"
      * @return a new url for the tmdb api
      */
-    public static URL buildMoviesUrl(String option) {
+    public static URL buildMoviesUrl(String... params) {
+        String option = params[0];
 
         if (option.isEmpty()) option = POPULAR;
         try {
@@ -76,7 +77,7 @@ public class NetworkUtils {
      * @param StringParam http result in a String
      * @return A list of movies
      */
-    public static ContentValues[] getMoviesList(String StringParam) {
+    public static ContentValues[] getMoviesContent(String StringParam) {
 
         JSONArray moviesArray;
         try {
@@ -90,7 +91,44 @@ public class NetworkUtils {
 
             for (int i = 0; i < moviesArray.length(); i++) {
                 JSONObject movieData = moviesArray.getJSONObject(i);
-                contentValues[i] = getMovieFromJson(movieData);
+                   contentValues[i] = getMovieFromJson(movieData);
+            }
+            return contentValues;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Builds a object of type ContentValues[] with extra content for a movie from a http request result
+     *
+     * @return Movie content values
+     */
+    public static ContentValues[] getMoviesContent(String stringParam, String desiredContent) {
+        JSONArray moviesArray;
+        try {
+            moviesArray = new JSONObject(stringParam).getJSONArray("results");
+
+            if (moviesArray == null) {
+                return null;
+            }
+
+            ContentValues[] contentValues = new ContentValues[moviesArray.length()];
+
+            for (int i = 0; i < moviesArray.length(); i++) {
+                JSONObject movieData = moviesArray.getJSONObject(i);
+                switch (desiredContent) {
+                    case REVIEWS:
+                        contentValues[i] = getReviewsFromJson(movieData);
+                        break;
+                    case VIDEOS:
+                        contentValues[i] = getVideosFromJson(movieData);
+                        break;
+                    default:
+                        contentValues[i] = getMovieFromJson(movieData);
+                        break;
+                }
             }
             return contentValues;
         } catch (JSONException e) {
@@ -118,6 +156,29 @@ public class NetworkUtils {
         movieValues.put(MoviesEntry.COLUMN_VOTE_AVERAGE, movieData.getString("vote_average"));
 
         return movieValues;
+    }
+
+    private static ContentValues getReviewsFromJson(JSONObject data) throws JSONException {
+        ContentValues reviewContent = new ContentValues();
+        reviewContent.put("id", data.getString("id"));
+        reviewContent.put("author", data.getString("author"));
+        reviewContent.put("content", data.getString("content"));
+        reviewContent.put("url", data.getString("url"));
+
+        return reviewContent;
+    }
+
+    private static ContentValues getVideosFromJson(JSONObject data) throws JSONException {
+        ContentValues videosContent = new ContentValues();
+        videosContent.put("id", data.getString("id"));
+        videosContent.put("key", data.getString("key"));
+        videosContent.put("name", data.getString("name"));
+        videosContent.put("site", data.getString("site"));
+        videosContent.put("language",
+                String.format("%s-%s", data.getString("iso_639_1"), data.getString("iso_3166_1"))
+        );
+
+        return videosContent;
     }
 
     /**
