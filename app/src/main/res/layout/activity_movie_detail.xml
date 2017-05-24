@@ -18,6 +18,7 @@
         tools:layout_constraintRight_creator="1">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/cl_detailsView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -65,33 +66,36 @@
 
             <TextView
                 android:id="@+id/tv_title"
-                android:layout_width="wrap_content"
+                android:gravity="fill_horizontal"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/marginDefault"
-                android:layout_marginTop="@dimen/marginDefault"
+                android:elegantTextHeight="true"
                 android:textSize="@dimen/Title"
-                app:layout_constraintLeft_toRightOf="@+id/img_poster"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="@id/guideline"
                 app:layout_constraintTop_toBottomOf="@+id/img_thumbnail"
-                tools:text="Doctor Strange" />
+                tools:text="@string/sample_long_title"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="-600dp"
+                app:layout_constraintLeft_toLeftOf="@+id/action_play_trailer" />
 
             <TextView
                 android:id="@+id/tv_yearOfRelease"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/marginDefault"
-                android:layout_marginTop="@dimen/marginDefault"
+                android:layout_margin="@dimen/marginDefault"
                 android:textSize="@dimen/subtitle_text"
                 app:layout_constraintLeft_toLeftOf="@+id/tv_title"
                 app:layout_constraintTop_toBottomOf="@+id/tv_title"
-                tools:text="2017" />
+                tools:text="2017"
+                app:layout_constraintRight_toRightOf="@+id/action_play_trailer" />
 
             <RatingBar
                 android:id="@+id/rb_voteAverage"
                 style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/marginDefault"
-                android:layout_marginTop="@dimen/marginDefault"
+                android:layout_margin="@dimen/marginDefault"
                 android:numStars="5"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.1"
@@ -105,30 +109,31 @@
                 android:id="@+id/action_play_trailer"
                 android:layout_width="165dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="76dp"
                 android:layout_marginStart="@dimen/marginDefault"
-                android:layout_marginTop="24dp"
                 android:background="@android:color/transparent"
                 android:drawableStart="@drawable/trailer_play"
                 android:text="@string/play_trailer"
                 android:textSize="18sp"
-                app:layout_constraintHorizontal_bias="0.14"
+                app:layout_constraintHorizontal_bias="0.128"
                 app:layout_constraintLeft_toRightOf="@+id/img_poster"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rb_voteAverage" />
+                app:layout_constraintTop_toBottomOf="@+id/rb_voteAverage"
+                android:layout_marginBottom="@dimen/marginDefault"
+                app:layout_constraintBottom_toTopOf="@+id/tv_overview_title" />
 
             <TextView
                 android:id="@+id/tv_overview_title"
                 android:layout_width="wrap_content"
                 android:layout_height="18dp"
                 android:layout_marginStart="@dimen/marginDefault"
-                android:layout_marginTop="16dp"
                 android:text="@string/overview"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintLeft_toLeftOf="@+id/guideline"
-                app:layout_constraintTop_toBottomOf="@+id/img_poster" />
+                app:layout_constraintTop_toBottomOf="@+id/img_poster"
+                tools:layout_editor_absoluteY="395dp"
+                android:layout_marginTop="16dp" />
 
             <TextView
                 android:id="@+id/tv_overview"
@@ -172,7 +177,6 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_review_title"
-                app:layout_constraintVertical_bias="0.0"
                 tools:text="@string/sample_long_text" />
 
             <android.support.constraint.Guideline
@@ -185,5 +189,10 @@
                 tools:layout_editor_absoluteY="106dp" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
+    <ProgressBar
+        android:textAlignment="center"
+        android:id="@+id/pb_loading_indicator_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </android.support.constraint.ConstraintLayout>

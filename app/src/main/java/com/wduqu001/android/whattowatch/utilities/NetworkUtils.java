@@ -29,10 +29,10 @@ public class NetworkUtils {
     private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
     private final static String LANGUAGE = Locale.getDefault().getLanguage().concat("-").concat(Locale.getDefault().getCountry());
     private final static int PAGES = 1;
-    public final static String POPULAR = "popular";
-    public final static String TOP_RATED = "top_rated";
-    public final static String REVIEWS = "reviews";
-    public final static String VIDEOS = "videos";
+    public final static String POPULAR = "popular"; // https://api.themoviedb.org/3/movie/popular?
+    public final static String TOP_RATED = "top_rated"; // https://api.themoviedb.org/3/movie/top_rated?
+    public final static String REVIEWS = "reviews"; // https://api.themoviedb.org/3/movie/283995/reviews?
+    public final static String VIDEOS = "videos"; // https://api.themoviedb.org/3/movie/283995/videos?
 
     /**
      * * Builds a url to query movie data
@@ -45,6 +45,18 @@ public class NetworkUtils {
 
         if (option.isEmpty()) option = POPULAR;
         try {
+            if(params.length > 1){
+                String id = params[1];
+                Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
+                        .appendPath(id)
+                        .appendPath(option)
+                        .appendQueryParameter("api_key", TMDB_API_KEY)
+                        .appendQueryParameter("language", LANGUAGE)
+                        .appendQueryParameter("page", Integer.toString(PAGES))
+                        .build();
+
+                return new URL(builtUri.toString());
+            }
             Uri builtUri = Uri.parse(TMDB_BASE_URL).buildUpon()
                     .appendPath(option)
                     .appendQueryParameter("api_key", TMDB_API_KEY)
@@ -77,6 +89,7 @@ public class NetworkUtils {
      * @param StringParam http result in a String
      * @return A list of movies
      */
+    @Deprecated
     public static ContentValues[] getMoviesContent(String StringParam) {
 
         JSONArray moviesArray;

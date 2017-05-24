@@ -29,7 +29,7 @@ public class MovieQueryTask extends AsyncTask<String, Void, ContentValues[]> {
     protected ContentValues[] doInBackground(String... params) {
         String option = params[0];
         if (NetworkUtils.isOnline()) {
-            URL url = NetworkUtils.buildMoviesUrl(option);
+            URL url = NetworkUtils.buildMoviesUrl(params);
             String moviesApiResult = getResponseFromHttpUrl(url);
             return getMoviesContent(moviesApiResult, option);
         }
