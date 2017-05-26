@@ -12,24 +12,24 @@ import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.C
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_POSTER_PATH;
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE;
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_TITLE;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_AVERAGE_RANKING;
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.TABLE_NAME;
 
 public class MoviesDbHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "waitlist.db";
+    private static final String DATABASE_NAME = "favoriteMovies.db";
     private static final int DATABASE_VERSION = 1;
 
-    private final String SQL_CREATE_WAITLIST_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
+    private static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
             _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             COLUMN_MOVIE_ID + " TEXT NOT NULL, " +
             COLUMN_TITLE + " TEXT NOT NULL, " +
-            COLUMN_POSTER_PATH + " TEXT, " +
             COLUMN_BACKDROP_PATH + " TEXT, " +
-            COLUMN_VOTE_AVERAGE + " REAL NOT NULL, " +
+            COLUMN_ORIGINAL_TITLE + " TEXT NOT NULL, " +
             COLUMN_OVERVIEW + " TEXT NOT NULL, " +
+            COLUMN_POSTER_PATH + " TEXT, " +
             COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
-            COLUMN_ORIGINAL_TITLE + " TEXT NOT NULL " +
+            COLUMN_AVERAGE_RANKING + " REAL NOT NULL " +
             "); ";
 
 //    private static final String DATABASE_ALTER_NEW_COLUMN = "ALTER TABLE "
@@ -41,7 +41,7 @@ public class MoviesDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_WAITLIST_TABLE);
+        db.execSQL(SQL_CREATE_TABLE);
     }
 
     @Override

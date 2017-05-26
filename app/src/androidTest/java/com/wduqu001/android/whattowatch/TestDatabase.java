@@ -7,11 +7,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.test.InstrumentationRegistry;
 
-import com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry;
 import com.wduqu001.android.whattowatch.data.MoviesDbHelper;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_AVERAGE_RANKING;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_BACKDROP_PATH;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_MOVIE_ID;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_ORIGINAL_TITLE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_OVERVIEW;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_POSTER_PATH;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_TITLE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.TABLE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,22 +31,40 @@ public class TestDatabase {
 
     private final Class<MoviesDbHelper> mDbHelperClass = MoviesDbHelper.class;
 
-    @Test
-    public void create_database_test() throws Exception {
+    @Before
+    public void deleteAllRecords() {
+        MoviesDbHelper dbHelper = new MoviesDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
+        /* The delete method deletes all of the desired rows from the table, not the table itself */
+        db.delete(TABLE_NAME, null, null);
+        dbHelper.close();
+    }
+
+    @Test
+    public void get_database_instance_test() throws Exception {
         SQLiteOpenHelper dbHelper =
                 mDbHelperClass.getConstructor(Context.class).newInstance(mContext);
-
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        assertNotEquals("Unable to get writable database", db, null);
 
         String databaseIsNotOpen = "The database should be open and isn't";
         assertEquals(databaseIsNotOpen,
                 true,
                 db.isOpen());
+    }
+
+    @Test
+    public void create_database_test() throws Exception {
+
+        SQLiteOpenHelper dbHelper =
+                mDbHelperClass.getConstructor(Context.class).newInstance(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         Cursor tableNameCursor = db.rawQuery(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='" +
-                        MoviesEntry.TABLE_NAME + "'",
+                        TABLE_NAME + "'",
                 null);
 
         /*
@@ -50,14 +77,14 @@ public class TestDatabase {
                 tableNameCursor.moveToFirst());
 
         assertEquals("Error: Database was created without the expected tables.",
-                MoviesEntry.TABLE_NAME, tableNameCursor.getString(0));
+                TABLE_NAME, tableNameCursor.getString(0));
 
         tableNameCursor.close();
+        dbHelper.close();
     }
 
     /**
      * This method tests inserting a single record into an empty table from a brand new database.
-     * The purpose is to test that the database is working as expected
      *
      * @throws Exception in case the constructor hasn't been implemented yet
      */
@@ -66,27 +93,51 @@ public class TestDatabase {
 
         SQLiteOpenHelper dbHelper =
                 mDbHelperClass.getConstructor(Context.class).newInstance(mContext);
-
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        ContentValues testValues = new ContentValues();
-        testValues.put(MoviesEntry.COLUMN_MOVIE_ID, "001");
-        testValues.put(MoviesEntry.COLUMN_TITLE, "movie test");
-        testValues.put(MoviesEntry.COLUMN_VOTE_AVERAGE, 2.5);
-        testValues.put(MoviesEntry.COLUMN_OVERVIEW, "database test");
-        testValues.put(MoviesEntry.COLUMN_RELEASE_DATE, "2001-01-01");
-        testValues.put(MoviesEntry.COLUMN_ORIGINAL_TITLE, "test movie");
+        assertNotEquals("Unable to insert into the database", -1, insertSingleRecord(db));
 
-        long firstRowId = db.insert(
-                MoviesEntry.TABLE_NAME,
-                null,
-                testValues);
+        dbHelper.close();
+    }
+
+    /**
+     * This method inserts a single record into the database.
+     */
+    private long insertSingleRecord(SQLiteDatabase db) throws Exception {
+
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_MOVIE_ID, "166426");
+        values.put(COLUMN_TITLE, "Pirates of the Caribbean: Dead Men Tell No Tales");
+        values.put(COLUMN_AVERAGE_RANKING, 6);
+        values.put(COLUMN_BACKDROP_PATH, "/3DVKG54lqYbdh8RNylXeCf4MBPw.jpg");
+        values.put(COLUMN_ORIGINAL_TITLE, "Pirates of the Caribbean: Dead Men Tell No Tales");
+        values.put(COLUMN_RELEASE_DATE, "2017-05-23");
+        values.put(COLUMN_POSTER_PATH, "/xbpSDU3p7YUGlu9Mr6Egg2Vweto.jpg");
+        values.put(COLUMN_OVERVIEW, "Captain Jack Sparrow is pursued by an old rival, Captain Salazar...");
 
         /* If the insert fails, database.insert returns -1 */
-        assertNotEquals("Unable to insert into the database", -1, firstRowId);
+        return db.insert(
+                TABLE_NAME,
+                null,
+                values);
+    }
 
-        Cursor cursor = db.query(
-                MoviesEntry.TABLE_NAME,
+    /**
+     * This method tests retrieving all records from the database.
+     *
+     * @throws Exception in case the constructor hasn't been implemented yet
+     */
+    @Test
+    public void get_all_records_test() throws Exception {
+
+        SQLiteOpenHelper dbHelper =
+                mDbHelperClass.getConstructor(Context.class).newInstance(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        insertSingleRecord(db);
+
+        Cursor allRecordsCursor = db.query(
+                TABLE_NAME,
                 /* Columns; leaving this null returns every column in the table */
                 null,
                 /* Optional specification for columns in the "where" clause above */
@@ -99,14 +150,37 @@ public class TestDatabase {
                 null,
                 /* Sort order to return in Cursor */
                 null);
-
         /* Cursor.moveToFirst will return false if there are no records returned from the query */
-        String emptyQueryError = "Error: No Records returned from the query";
-        assertTrue(emptyQueryError,
-                cursor.moveToFirst());
-
-        cursor.close();
+        assertTrue("Error: No Records returned from the query",
+                allRecordsCursor.moveToFirst());
+        allRecordsCursor.close();
         dbHelper.close();
     }
 
+    /**
+     * This method tests retrieving a single record from the database.
+     *
+     * @throws Exception in case the constructor hasn't been implemented yet
+     */
+    @Test
+    public void get_record_by_movie_id_test() throws Exception {
+
+        SQLiteOpenHelper dbHelper =
+                mDbHelperClass.getConstructor(Context.class).newInstance(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        insertSingleRecord(db);
+
+        String movieId = "166426";
+        String columns[] = {};
+        String where = COLUMN_MOVIE_ID + "=" + movieId;
+
+        Cursor byIdCursor = db.query(true, TABLE_NAME, columns, where, null, null, null, null, null);
+        byIdCursor.moveToFirst();
+        String storedId = byIdCursor.getString(byIdCursor.getColumnIndex(COLUMN_MOVIE_ID));
+
+        assertEquals("Unable to locate movie by its ID", storedId, movieId);
+        byIdCursor.close();
+        dbHelper.close();
+    }
 }

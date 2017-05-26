@@ -166,7 +166,7 @@ public class NetworkUtils {
         movieValues.put(MoviesEntry.COLUMN_OVERVIEW, movieData.getString("overview"));
         movieValues.put(MoviesEntry.COLUMN_POSTER_PATH, movieData.getString("poster_path"));
         movieValues.put(MoviesEntry.COLUMN_RELEASE_DATE, movieData.getString("release_date"));
-        movieValues.put(MoviesEntry.COLUMN_VOTE_AVERAGE, movieData.getString("vote_average"));
+        movieValues.put(MoviesEntry.COLUMN_AVERAGE_RANKING, movieData.getString("vote_average"));
 
         return movieValues;
     }

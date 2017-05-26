@@ -28,7 +28,7 @@ import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.C
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_POSTER_PATH;
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE;
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_TITLE;
-import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_VOTE_AVERAGE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_AVERAGE_RANKING;
 
 public class MovieDetail extends AppCompatActivity {
 
@@ -92,7 +92,7 @@ public class MovieDetail extends AppCompatActivity {
 
         mTitleTextView.setText(movieContent.getAsString(COLUMN_ORIGINAL_TITLE));
         mOverviewTextView.setText(movieContent.getAsString(COLUMN_OVERVIEW));
-        mRatingRatingBar.setRating((float) (movieContent.getAsDouble(COLUMN_VOTE_AVERAGE) / 2));
+        mRatingRatingBar.setRating((float) (movieContent.getAsDouble(COLUMN_AVERAGE_RANKING) / 2));
 
         String date = movieContent.getAsString(COLUMN_RELEASE_DATE);
         String year = date == null || date.isEmpty() ? "" : String.format("( %s )", date.substring(0, 4));
