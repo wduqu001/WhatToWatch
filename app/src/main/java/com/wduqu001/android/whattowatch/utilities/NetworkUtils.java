@@ -25,7 +25,8 @@ import okhttp3.Response;
 
 public class NetworkUtils {
 
-    public final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
+    public final static String TMDB_IMG_URL = "http://image.tmdb.org/t/p/w300";
+    private final static String TMDB_BASE_URL = "https://api.themoviedb.org/3/movie/";
     private final static String TMDB_API_KEY = BuildConfig.TMDB_API_KEY;
     private final static String LANGUAGE = Locale.getDefault().getLanguage().concat("-").concat(Locale.getDefault().getCountry());
     private final static int PAGES = 1;
@@ -154,8 +155,8 @@ public class NetworkUtils {
      * Creates a ContentValues with Movie content from JSON
      *
      * @param movieData JSONObject from with Movie will be extracted
-     * @return ContentValues
-     * @throws JSONException
+     * @return ContentValues The movie data
+     * @throws JSONException in case of a non-readable json object
      */
     private static ContentValues getMovieFromJson(JSONObject movieData) throws JSONException {
         ContentValues movieValues = new ContentValues();

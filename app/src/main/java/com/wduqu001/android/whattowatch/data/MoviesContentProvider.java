@@ -6,10 +6,12 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_MOVIE_ID;
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.CONTENT_URI;
@@ -29,7 +31,7 @@ public class MoviesContentProvider extends ContentProvider {
      * Initialize a new matcher object without any matches,
      * then use .addURI(String authority, String path, int match) to add matches
      */
-    public static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
 
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         /*
@@ -99,25 +101,25 @@ public class MoviesContentProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         final SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
         int match = sUriMatcher.match(uri);
-        Uri returnUri;
+        Uri returnUri = null;
 
         switch (match) {
             case MOVIES:
-                long id = db.insert(TABLE_NAME, null, values);
-                if (id > 0) {
-                    returnUri = ContentUris.withAppendedId(CONTENT_URI, id);
-                } else {
-                    throw new android.database.SQLException("Failed to insert row into " + uri);
+                try {
+                    long id = db.insertOrThrow(TABLE_NAME, null, values);
+                    if (id > 0) {
+                        returnUri = ContentUris.withAppendedId(CONTENT_URI, id);
+                    }
+                }catch (SQLiteConstraintException e){
+                    Log.d("MoviesContentProvider","Failed on insert operation. Is the content already on DB ? " + uri);
                 }
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
-
+        db.close();
         mContentResolver.notifyChange(uri, null);
-
         return returnUri;
     }
 
@@ -141,7 +143,7 @@ public class MoviesContentProvider extends ContentProvider {
         if (tasksDeleted != 0) {
             mContentResolver.notifyChange(uri, null);
         }
-
+        db.close();
         return tasksDeleted;
     }
 

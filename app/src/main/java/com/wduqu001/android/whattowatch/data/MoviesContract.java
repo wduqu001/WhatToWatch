@@ -6,7 +6,7 @@ import android.provider.BaseColumns;
 public class MoviesContract {
 
     public static final String AUTHORITY = "com.wduqu001.android.whattowatch";
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_MOVIES = "movies";
 
     public static final class MoviesEntry implements BaseColumns {

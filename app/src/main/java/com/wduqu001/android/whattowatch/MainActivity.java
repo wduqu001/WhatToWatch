@@ -15,6 +15,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.wduqu001.android.whattowatch.sync.MovieQueryTask;
+import com.wduqu001.android.whattowatch.sync.QueryTaskCompleteListener;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -149,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onSaveInstanceState(outState);
     }
 
-    class TaskCompleteListener implements QueryTaskCompleteListener<ContentValues[]> {
+    private class TaskCompleteListener implements QueryTaskCompleteListener<ContentValues[]> {
         /**
          * Invoked when the AsyncTask has completed its execution.
          *

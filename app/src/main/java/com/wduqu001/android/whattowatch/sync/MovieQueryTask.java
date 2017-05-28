@@ -1,4 +1,4 @@
-package com.wduqu001.android.whattowatch;
+package com.wduqu001.android.whattowatch.sync;
 
 import android.content.ContentValues;
 import android.os.AsyncTask;
@@ -16,7 +16,7 @@ import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.getRespons
 public class MovieQueryTask extends AsyncTask<String, Void, ContentValues[]> {
     private final QueryTaskCompleteListener<ContentValues[]> mTaskCompleteListener;
 
-    MovieQueryTask(QueryTaskCompleteListener<ContentValues[]> listener) {
+    public MovieQueryTask(QueryTaskCompleteListener<ContentValues[]> listener) {
         this.mTaskCompleteListener = listener;
     }
 

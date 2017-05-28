@@ -13,4 +13,6 @@
     <string name="play_trailer">Play Trailer</string>
     <string name="reviews">Reviews</string>
     <string name="favorites">Favorites</string>
+    <string name="movie_was_saved">Saved on favorite list</string>
+    <string name="something_went_wrong">Something went wrong</string>
 </resources>

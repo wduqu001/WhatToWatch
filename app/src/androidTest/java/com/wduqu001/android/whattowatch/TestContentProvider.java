@@ -44,13 +44,13 @@ public class TestContentProvider {
      * @param valueCursor    The Cursor containing the actual values received from an arbitrary query
      * @param expectedValues The values we expect to receive in valueCursor
      */
-    private static void validateThenCloseCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
+    private static void validateThenCloseCursor(String task, Cursor valueCursor, ContentValues expectedValues) {
         assertNotNull(
                 "This cursor is null. Did you make sure to register your ContentProvider in the manifest?",
                 valueCursor);
 
-        assertTrue("Empty cursor returned. " + error, valueCursor.moveToFirst());
-        validateCurrentRecord(error, valueCursor, expectedValues);
+        assertTrue("Empty cursor returned. " + task, valueCursor.moveToFirst());
+        validateCurrentRecord(task, valueCursor, expectedValues);
         valueCursor.close();
     }
 

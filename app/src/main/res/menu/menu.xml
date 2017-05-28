@@ -5,7 +5,6 @@
         android:orderInCategory="1"
         android:title="@string/top_rated" />
     <item
-        android:id="@+id/action_most_popular"
         android:orderInCategory="2"
         android:title="@string/popular" />
     <item
