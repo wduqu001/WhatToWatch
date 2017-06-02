@@ -13,8 +13,11 @@
     <string name="play_trailer">Play Trailer</string>
     <string name="reviews">Reviews</string>
     <string name="favorites">Favorites</string>
-    <string name="movie_was_saved">Saved on favorite list</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="movie_content" translatable="false">movie</string>
     <string name="movie_list_content" translatable="false">movies</string>
+    <string name="absent">absent</string>
+    <string name="present">present</string>
+    <string name="favorite_list_updated">Favorite list updated!</string>
+    <string name="unable_to_load">Unable to load content. Please try again.</string>
 </resources>

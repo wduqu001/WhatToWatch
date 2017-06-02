@@ -37,7 +37,7 @@ public class AsyncDbTasks extends AsyncTask<String, Void, ContentValues> {
         Uri uri = MoviesContract.MoviesEntry.CONTENT_URI;
         if (params.length > 1 && params[1] != null) {
             movieId = params[1];
-            uri = Uri.parse(MoviesContract.MoviesEntry.CONTENT_URI + movieId);
+            uri = Uri.parse(MoviesContract.MoviesEntry.CONTENT_URI + "/" + movieId);
         }
         switch (option) {
             case QUERY:

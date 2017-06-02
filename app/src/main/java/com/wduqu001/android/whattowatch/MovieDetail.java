@@ -61,7 +61,7 @@ public class MovieDetail extends AppCompatActivity {
     @BindView(R.id.action_play_trailer)
     Button mPlayTrailerButton;
     @BindView(R.id.action_favorite)
-    ImageButton mAddToFavoriteImageButton;
+    ImageButton mFavoriteImageButton;
     @BindView(R.id.pb_loading_indicator_details)
     ProgressBar mLoadingIndicator;
     private Context mContext;
@@ -113,7 +113,7 @@ public class MovieDetail extends AppCompatActivity {
     private void updateView(ContentValues[] contentValues, String contentType) {
         showLoading(View.INVISIBLE);
         if (contentValues == null || contentValues.length < 1) {
-            Toast.makeText(this, "Unable to load content. Please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.unable_to_load), Toast.LENGTH_SHORT).show();
             return;
         }
         switch (contentType) {
@@ -150,12 +150,26 @@ public class MovieDetail extends AppCompatActivity {
         mLoadingIndicator.setVisibility(visibility);
     }
 
-    public void addToWatchList(View view) {
-        // TODO: Check if mAddToFavoriteImageButton is already using watchribbon_present,
-        // remove it from the list and change it to absent
+    public void updateFavorites(View view) {
+        if (view.getTag(R.id.action_favorite) == getString(R.string.present)) {
+            removeFromFavorites();
+            return;
+        }
+        addToFavorites();
+    }
+
+    private void removeFromFavorites() {
+        new AsyncDbTasks(new DbTaskCompleteListener()
+                , mContext, null).execute(AsyncDbTasks.DELETE, mMovieId);
+        mFavoriteImageButton.setTag(R.id.action_favorite, getString(R.string.absent));
+        mFavoriteImageButton.setImageResource(R.drawable.watchribbon_absent);
+    }
+
+    private void addToFavorites() {
         new AsyncDbTasks(new DbTaskCompleteListener()
                 , mContext, mMovieContent).execute(AsyncDbTasks.INSERT);
-        mAddToFavoriteImageButton.setImageResource(R.drawable.watchribbon_present);
+        mFavoriteImageButton.setTag(R.id.action_favorite, getString(R.string.present));
+        mFavoriteImageButton.setImageResource(R.drawable.watchribbon_present);
     }
 
     private class TaskCompleteListener implements QueryTaskCompleteListener<ContentValues[]> {
@@ -179,7 +193,7 @@ public class MovieDetail extends AppCompatActivity {
                 Toast.makeText(mContext, getText(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
                 return;
             }
-            Toast.makeText(mContext, getText(R.string.movie_was_saved), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, getString(R.string.favorite_list_updated), Toast.LENGTH_SHORT).show();
         }
     }
 }

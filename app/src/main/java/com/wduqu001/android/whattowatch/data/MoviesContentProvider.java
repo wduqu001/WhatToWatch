@@ -89,7 +89,7 @@ public class MoviesContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         retCursor.setNotificationUri(mContentResolver, uri);
-
+        mDbHelper.close();
         return retCursor;
     }
 
