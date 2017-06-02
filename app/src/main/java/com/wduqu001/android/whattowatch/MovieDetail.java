@@ -128,7 +128,9 @@ public class MovieDetail extends AppCompatActivity {
                 break;
             case NetworkUtils.REVIEWS:
                 mReviewsContent = contentValues;
-                // TODO: MISSING REVIEWS IMPLEMENTATION
+                // TODO: Improve the way reviews are displayed
+                mReviewTextView.setText("");
+                mReviewTextView.append(mReviewsContent[0].getAsString("content"));
                 break;
         }
         mConstraintDetailsView.setVisibility(View.VISIBLE);
