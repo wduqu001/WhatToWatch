@@ -6,4 +6,10 @@
     <string name="overview">Sinopse</string>
     <string name="top_rated">Mais bem avaliados</string>
     <string name="popular">Mais populares</string>
+    <string name="favorites">Favoritos</string>
+    <string name="movie_was_saved">Adicionado a lista de favoritos</string>
+    <string name="play_trailer">Reproduzir trailer</string>
+    <string name="something_went_wrong">Ocorreu um error inesperado</string>
+    <string name="favorite_button">Adicionar/ remover filme da lista de favoritos</string>
+    <string name="reviews">Críticas</string>
 </resources>

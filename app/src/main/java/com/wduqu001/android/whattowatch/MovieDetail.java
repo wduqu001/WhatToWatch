@@ -108,9 +108,9 @@ public class MovieDetail extends AppCompatActivity {
         String year = date == null || date.isEmpty() ? "" : String.format("( %s )", date.substring(0, 4));
         mYearOfReleaseTextView.setText(year);
 
-        new MovieQueryTask(new TaskCompleteListener(NetworkUtils.VIDEOS))
+        new MovieQueryTask(new TaskCompleteListener(NetworkUtils.VIDEOS), mContext)
                 .execute(NetworkUtils.VIDEOS, mMovieId);
-        new MovieQueryTask(new TaskCompleteListener(NetworkUtils.REVIEWS))
+        new MovieQueryTask(new TaskCompleteListener(NetworkUtils.REVIEWS), mContext)
                 .execute(NetworkUtils.REVIEWS, mMovieId);
     }
 
@@ -155,17 +155,8 @@ public class MovieDetail extends AppCompatActivity {
     }
 
     public void addToWatchList(View view) {
-        new AsyncDbTasks(new QueryTaskCompleteListener<Uri>() {
-
-            @Override
-            public void onTaskComplete(Uri result) {
-                if (result == null) {
-                    Toast.makeText(mContext, getText(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Toast.makeText(mContext, getText(R.string.movie_was_saved), Toast.LENGTH_SHORT).show();
-            }
-        }, mContext).execute(mMovieContent);
+        new AsyncDbTasks(new DbTaskCompleteListener()
+                , mContext, mMovieContent).execute(AsyncDbTasks.INSERT);
         mAddToFavoriteImageButton.setImageResource(R.drawable.watchribbon_present);
     }
 
@@ -179,6 +170,18 @@ public class MovieDetail extends AppCompatActivity {
         @Override
         public void onTaskComplete(ContentValues[] result) {
             updateView(result, mContent);
+        }
+    }
+
+    private class DbTaskCompleteListener implements QueryTaskCompleteListener<ContentValues> {
+
+        @Override
+        public void onTaskComplete(ContentValues result) {
+            if (result == null) {
+                Toast.makeText(mContext, getText(R.string.something_went_wrong), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Toast.makeText(mContext, getText(R.string.movie_was_saved), Toast.LENGTH_SHORT).show();
         }
     }
 }

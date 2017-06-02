@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.wduqu001.android.whattowatch.BuildConfig;
+import com.wduqu001.android.whattowatch.data.MoviesContract;
 import com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry;
 
 import org.json.JSONArray;
@@ -160,7 +161,7 @@ public class NetworkUtils {
      */
     private static ContentValues getMovieFromJson(JSONObject movieData) throws JSONException {
         ContentValues movieValues = new ContentValues();
-        movieValues.put(MoviesEntry.COLUMN_MOVIE_ID, movieData.getString("id"));
+        movieValues.put(MoviesContract.MoviesEntry.COLUMN_MOVIE_ID, movieData.getString("id"));
         movieValues.put(MoviesEntry.COLUMN_TITLE, movieData.getString("title"));
         movieValues.put(MoviesEntry.COLUMN_BACKDROP_PATH, movieData.getString("backdrop_path"));
         movieValues.put(MoviesEntry.COLUMN_ORIGINAL_TITLE, movieData.getString("original_title"));

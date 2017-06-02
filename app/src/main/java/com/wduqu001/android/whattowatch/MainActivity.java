@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     ProgressBar mLoadingIndicator;
     private String mOption;
     private MovieAdapter mMovieAdapter;
-    private ContentValues[] mMovieContent;
+    private ContentValues[] mMovieListContent;
+    public final static String FAVORITES = "favorites";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +49,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         // recovering the instance state
         if (savedInstanceState != null) {
-            mMovieContent = (ContentValues[]) savedInstanceState.getParcelableArray("movies");
+            mMovieListContent = (ContentValues[]) savedInstanceState.getParcelableArray(
+                    getString(R.string.movie_list_content));
             mOption = savedInstanceState.getString("option");
-            updateView(mMovieContent);
+            updateView(mMovieListContent);
         } else {
             mOption = POPULAR;
             loadMovieList();
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      */
     private void loadMovieList() {
         showLoading(View.VISIBLE);
-        new MovieQueryTask(new TaskCompleteListener()).execute(mOption);
+        new MovieQueryTask(new TaskCompleteListener(), this).execute(mOption);
     }
 
     /**
@@ -100,8 +102,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private void UpdateTitle() {
         if (mOption.equals(POPULAR)) {
             setTitle(getString(R.string.popular));
-        } else {
+        }
+        else if(mOption.equals(TOP_RATED)) {
             setTitle(getString(R.string.top_rated));
+        } else {
+            setTitle(getString(R.string.favorites));
         }
     }
 
@@ -115,9 +120,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         return super.onCreateOptionsMenu(menu);
     }
 
+    //TODO: load favorite movies list
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        mOption = (item.getItemId() == R.id.action_top_rated ? TOP_RATED : POPULAR);
+        switch (item.getItemId()){
+            case R.id.action_top_rated:
+                mOption = TOP_RATED;
+                break;
+            case R.id.action_favorite:
+                mOption = FAVORITES;
+                break;
+            default:
+                mOption = POPULAR;
+        }
         loadMovieList();
         return super.onOptionsItemSelected(item);
     }
@@ -128,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         Class destinationActivity = MovieDetail.class;
 
         Intent intent = new Intent(context, destinationActivity);
-        intent.putExtra("movie", movieContent);
+        intent.putExtra(getString(R.string.movie_content), movieContent);
         startActivity(intent);
     }
 
@@ -138,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             showErrorMessage();
             return;
         }
-        mMovieContent = contentValues;
-        mMovieAdapter.setMovies(mMovieContent);
+        mMovieListContent = contentValues;
+        mMovieAdapter.setMovies(mMovieListContent);
         mMovieAdapter.notifyDataSetChanged();
         UpdateTitle();
         showMovieDataView();
@@ -147,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArray("movies", mMovieContent);
+        outState.putParcelableArray(getString(R.string.movie_list_content), mMovieListContent);
         outState.putString("option", mOption);
         super.onSaveInstanceState(outState);
     }

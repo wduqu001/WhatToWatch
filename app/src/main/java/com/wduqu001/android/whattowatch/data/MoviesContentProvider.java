@@ -20,9 +20,8 @@ import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.T
 @SuppressWarnings("ConstantConditions")
 public class MoviesContentProvider extends ContentProvider {
     // Define final integer constants for the directory of movies and a single item.
-    public static final int MOVIES = 100;
-    public static final int MOVIES_WITH_ID = 101;
-
+    private static final int MOVIES = 100;
+    private static final int MOVIES_WITH_ID = 101;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private MoviesDbHelper mDbHelper;
     private ContentResolver mContentResolver;
@@ -31,7 +30,7 @@ public class MoviesContentProvider extends ContentProvider {
      * Initialize a new matcher object without any matches,
      * then use .addURI(String authority, String path, int match) to add matches
      */
-    private static UriMatcher buildUriMatcher() {
+    public static UriMatcher buildUriMatcher() {
 
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         /*
@@ -56,7 +55,6 @@ public class MoviesContentProvider extends ContentProvider {
 
         // Get access to the database
         final SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         int match = sUriMatcher.match(uri);
         Cursor retCursor;
         final boolean distinct = true;
@@ -75,15 +73,13 @@ public class MoviesContentProvider extends ContentProvider {
                         orderBy);
                 break;
             case MOVIES_WITH_ID:
-                String id = uri.getPathSegments().get(1);
-                if (selection.isEmpty()) {
-                    selection = COLUMN_MOVIE_ID + "=" + id;
-                }
+                selection = selection == null ? COLUMN_MOVIE_ID + "=?" : selection;
+                selectionArgs = selectionArgs == null ? new String[]{uri.getPathSegments().get(1)} : selectionArgs;
                 retCursor = db.query(distinct,
                         TABLE_NAME,
                         columns,
                         selection,
-                        new String[]{id},
+                        selectionArgs,
                         groupBy,
                         having,
                         orderBy,
@@ -107,10 +103,17 @@ public class MoviesContentProvider extends ContentProvider {
         switch (match) {
             case MOVIES:
                 try {
-                    long id = db.insertOrThrow(TABLE_NAME, null, values);
+                    long id = db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
                     if (id > 0) {
                         returnUri = ContentUris.withAppendedId(CONTENT_URI, id);
                     }
+                    String selection = COLUMN_MOVIE_ID + "=?";
+                    String[] selectionArgs = new String[]{values.getAsString(MoviesContract.MoviesEntry.COLUMN_MOVIE_ID)};
+                    int rowsAffected = db.update(TABLE_NAME, values, selection, selectionArgs);
+                    if(rowsAffected < 1){
+                        return null;
+                    }
+                    returnUri = ContentUris.withAppendedId(CONTENT_URI, 1);
                 }catch (SQLiteConstraintException e){
                     Log.d("MoviesContentProvider","Failed on insert operation. Is the content already on DB ? " + uri);
                 }
@@ -133,8 +136,9 @@ public class MoviesContentProvider extends ContentProvider {
 
         switch (match) {
             case MOVIES_WITH_ID:
-                String id = uri.getPathSegments().get(1);
-                tasksDeleted = db.delete(TABLE_NAME, "_id=?", new String[]{id});
+                selection = selection == null ? COLUMN_MOVIE_ID + "=?" : selection;
+                selectionArgs = selectionArgs == null ? new String[]{uri.getPathSegments().get(1)} : selectionArgs;
+                tasksDeleted = db.delete(TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -154,8 +158,9 @@ public class MoviesContentProvider extends ContentProvider {
 
         switch (match) {
             case MOVIES_WITH_ID:
-                String id = uri.getPathSegments().get(1);
-                moviesUpdated = mDbHelper.getWritableDatabase().update(TABLE_NAME, values, "_id=?", new String[]{id});
+                selection = selection == null ? COLUMN_MOVIE_ID + "=?" : selection;
+                selectionArgs = selectionArgs == null ? new String[]{uri.getPathSegments().get(1)} : selectionArgs;
+                moviesUpdated = mDbHelper.getWritableDatabase().update(TABLE_NAME, values, selection, selectionArgs );
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

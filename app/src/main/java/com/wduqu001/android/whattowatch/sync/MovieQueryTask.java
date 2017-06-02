@@ -1,12 +1,16 @@
 package com.wduqu001.android.whattowatch.sync;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 import android.os.AsyncTask;
 
+import com.wduqu001.android.whattowatch.data.MoviesContract;
 import com.wduqu001.android.whattowatch.utilities.NetworkUtils;
 
 import java.net.URL;
 
+import static com.wduqu001.android.whattowatch.utilities.DataUtils.getMoviesFromCursor;
 import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.getMoviesContent;
 import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.getResponseFromHttpUrl;
 
@@ -15,9 +19,11 @@ import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.getRespons
  */
 public class MovieQueryTask extends AsyncTask<String, Void, ContentValues[]> {
     private final QueryTaskCompleteListener<ContentValues[]> mTaskCompleteListener;
+    private final Context mContext;
 
-    public MovieQueryTask(QueryTaskCompleteListener<ContentValues[]> listener) {
+    public MovieQueryTask(QueryTaskCompleteListener<ContentValues[]> listener, Context context) {
         this.mTaskCompleteListener = listener;
+        this.mContext = context;
     }
 
     /**
@@ -28,6 +34,13 @@ public class MovieQueryTask extends AsyncTask<String, Void, ContentValues[]> {
     @Override
     protected ContentValues[] doInBackground(String... params) {
         String option = params[0];
+        if(option.equals("favorites")){
+            Cursor cursor = mContext.getContentResolver().query(
+                    MoviesContract.MoviesEntry.CONTENT_URI, null, null, null, null);
+            if(cursor != null && cursor.moveToFirst() ){
+                return getMoviesFromCursor(cursor);
+            }
+        }
         if (NetworkUtils.isOnline()) {
             URL url = NetworkUtils.buildMoviesUrl(params);
             String moviesApiResult = getResponseFromHttpUrl(url);

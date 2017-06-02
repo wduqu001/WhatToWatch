@@ -6,7 +6,7 @@ import android.os.Parcelable;
 /**
  * Represents some information collected about a Movie from the api.
  */
-
+@Deprecated
 public class Movie implements Parcelable {
 
     private final String mMovieId;
