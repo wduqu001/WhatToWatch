@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         return super.onCreateOptionsMenu(menu);
     }
 
-    //TODO: load favorite movies list
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){

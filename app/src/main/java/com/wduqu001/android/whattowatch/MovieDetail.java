@@ -74,10 +74,6 @@ public class MovieDetail extends AppCompatActivity {
         ButterKnife.bind(this);
 
         mMovieContent = getIntent().getParcelableExtra("movie");
-        if (mMovieContent == null || mMovieContent.size() < 2) {
-            Toast.makeText(mContext, "Retrieving data from db", Toast.LENGTH_SHORT).show();
-            // TODO: query movie data from db
-        }
         loadMovieContent(mMovieContent);
     }
 
@@ -155,6 +151,8 @@ public class MovieDetail extends AppCompatActivity {
     }
 
     public void addToWatchList(View view) {
+        // TODO: Check if mAddToFavoriteImageButton is already using watchribbon_present,
+        // remove it from the list and change it to absent
         new AsyncDbTasks(new DbTaskCompleteListener()
                 , mContext, mMovieContent).execute(AsyncDbTasks.INSERT);
         mAddToFavoriteImageButton.setImageResource(R.drawable.watchribbon_present);
