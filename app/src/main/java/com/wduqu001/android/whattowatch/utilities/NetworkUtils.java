@@ -86,36 +86,6 @@ public class NetworkUtils {
     }
 
     /**
-     * Builds a object of type ContentValues[] with movies content from a String ( resulted from a http request)
-     *
-     * @param StringParam http result in a String
-     * @return A list of movies
-     */
-    @Deprecated
-    public static ContentValues[] getMoviesContent(String StringParam) {
-
-        JSONArray moviesArray;
-        try {
-            moviesArray = new JSONObject(StringParam).getJSONArray("results");
-
-            if (moviesArray == null) {
-                return null;
-            }
-
-            ContentValues[] contentValues = new ContentValues[moviesArray.length()];
-
-            for (int i = 0; i < moviesArray.length(); i++) {
-                JSONObject movieData = moviesArray.getJSONObject(i);
-                   contentValues[i] = getMovieFromJson(movieData);
-            }
-            return contentValues;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
      * Builds a object of type ContentValues[] with extra content for a movie from a http request result
      *
      * @return Movie content values
