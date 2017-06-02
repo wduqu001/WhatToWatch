@@ -33,7 +33,6 @@ public class AsyncDbTasks extends AsyncTask<String, Void, ContentValues> {
         String movieId = null;
         ContentValues result = new ContentValues();
         int rowsAffected;
-        // TODO: validate necessity for the variable bellow (uri)
         Uri uri = MoviesContract.MoviesEntry.CONTENT_URI;
         if (params.length > 1 && params[1] != null) {
             movieId = params[1];
