@@ -17,6 +17,7 @@ public class AsyncDbTasks extends AsyncTask<String, Void, ContentValues> {
     public static final String INSERT = "insert";
     public static final String UPDATE = "update";
     public static final String DELETE = "delete";
+    private final String RESULT = "result";
     private final QueryTaskCompleteListener<ContentValues> mTaskCompleteListener;
     private final Context mContext;
     private final ContentValues mValues;
@@ -30,7 +31,7 @@ public class AsyncDbTasks extends AsyncTask<String, Void, ContentValues> {
     @Override
     protected ContentValues doInBackground(@NonNull String... params) {
         String option = params[0];
-        String movieId = null;
+        String movieId;
         ContentValues result = new ContentValues();
         int rowsAffected;
         Uri uri = MoviesContract.MoviesEntry.CONTENT_URI;
@@ -40,33 +41,32 @@ public class AsyncDbTasks extends AsyncTask<String, Void, ContentValues> {
         }
         switch (option) {
             case QUERY:
-                // Only with id
-                if (movieId == null) {
-                    return null;
-                }
                 Cursor cursor = mContext.getContentResolver().query(uri, null, null, null, null);
                 if (cursor != null) {
-                    return getMovieContentFromCursor(cursor);
+                    result = getMovieContentFromCursor(cursor);
+                    cursor.close();
+
+                    return result;
                 }
                 break;
             case DELETE:
                 rowsAffected = mContext.getContentResolver().delete(uri, null, null);
                 if (rowsAffected > 0) {
-                    result.put("result", rowsAffected);
+                    result.put(RESULT, rowsAffected);
                     return result;
                 }
                 break;
             case INSERT:
                 Uri resultUri = mContext.getContentResolver().insert(MoviesContract.MoviesEntry.CONTENT_URI, mValues);
                 if (resultUri != null) {
-                    result.put("result", resultUri.toString());
+                    result.put(RESULT, resultUri.toString());
                     return result;
                 }
                 break;
             case UPDATE:
                 rowsAffected = mContext.getContentResolver().update(uri, mValues, null, null);
                 if (rowsAffected > 0) {
-                    result.put("result", rowsAffected);
+                    result.put(RESULT, rowsAffected);
                     return result;
                 }
                 break;

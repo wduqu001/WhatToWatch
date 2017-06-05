@@ -20,4 +20,5 @@
     <string name="present">present</string>
     <string name="favorite_list_updated">Favorite list updated!</string>
     <string name="unable_to_load">Unable to load content. Please try again.</string>
+    <string name="option_favorites">favorites</string>
 </resources>

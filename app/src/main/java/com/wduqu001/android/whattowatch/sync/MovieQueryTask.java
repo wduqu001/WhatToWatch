@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 
+import com.wduqu001.android.whattowatch.R;
 import com.wduqu001.android.whattowatch.data.MoviesContract;
 import com.wduqu001.android.whattowatch.utilities.NetworkUtils;
 
@@ -34,10 +35,10 @@ public class MovieQueryTask extends AsyncTask<String, Void, ContentValues[]> {
     @Override
     protected ContentValues[] doInBackground(String... params) {
         String option = params[0];
-        if(option.equals("favorites")){
+        if (option.equals(mContext.getString(R.string.option_favorites))) {
             Cursor cursor = mContext.getContentResolver().query(
                     MoviesContract.MoviesEntry.CONTENT_URI, null, null, null, null);
-            if(cursor != null && cursor.moveToFirst() ){
+            if (cursor != null && cursor.moveToFirst()) {
                 return getMoviesFromCursor(cursor);
             }
         }

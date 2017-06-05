@@ -37,6 +37,7 @@ public class DataUtils {
                  cursor.moveToNext();
              }
          }
+         cursor.close();
         return movies;
     }
 }

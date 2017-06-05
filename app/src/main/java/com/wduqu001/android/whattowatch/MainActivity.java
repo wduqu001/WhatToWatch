@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private String mOption;
     private MovieAdapter mMovieAdapter;
     private ContentValues[] mMovieListContent;
-    public final static String FAVORITES = "favorites";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,16 +96,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     /**
-     * Updates the title to reflect the current user's choice
+     * Updates the title to reflect the user's choice
      */
     private void UpdateTitle() {
-        if (mOption.equals(POPULAR)) {
-            setTitle(getString(R.string.popular));
-        }
-        else if(mOption.equals(TOP_RATED)) {
-            setTitle(getString(R.string.top_rated));
-        } else {
-            setTitle(getString(R.string.favorites));
+        switch (mOption) {
+            case TOP_RATED:
+                setTitle(getString(R.string.top_rated));
+                break;
+            case POPULAR:
+                setTitle(getString(R.string.popular));
+                break;
+            default:
+                setTitle(getString(R.string.favorites));
+                break;
         }
     }
 
@@ -122,12 +124,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_top_rated:
                 mOption = TOP_RATED;
                 break;
             case R.id.action_favorite:
-                mOption = FAVORITES;
+                mOption = getString(R.string.option_favorites);
                 break;
             default:
                 mOption = POPULAR;
@@ -143,6 +145,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         Intent intent = new Intent(context, destinationActivity);
         intent.putExtra(getString(R.string.movie_content), movieContent);
+        if (mOption.equals(getString(R.string.option_favorites))) {
+            intent.putExtra(getString(R.string.favorites), true);
+        }
         startActivity(intent);
     }
 

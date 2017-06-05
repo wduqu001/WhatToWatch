@@ -73,11 +73,16 @@ public class MovieDetail extends AppCompatActivity {
         mContext = MovieDetail.this;
         ButterKnife.bind(this);
 
-        mMovieContent = getIntent().getParcelableExtra("movie");
+        mMovieContent = getIntent().getParcelableExtra(getString(R.string.movie_content));
+        boolean isFavorite = getIntent().getExtras().getBoolean(getString(R.string.favorites));
+
         loadMovieContent(mMovieContent);
+
+        if (isFavorite) {
+            updateFavoriteImageButton(getString(R.string.present), R.drawable.watchribbon_present);
+        }
     }
 
-    // TODO: check if movie is already saved, if it is, use watchlist_present
     private void loadMovieContent(ContentValues movieContent) {
         mConstraintDetailsView.setVisibility(View.INVISIBLE);
         showLoading(View.VISIBLE);
@@ -113,7 +118,7 @@ public class MovieDetail extends AppCompatActivity {
     private void updateView(ContentValues[] contentValues, String contentType) {
         showLoading(View.INVISIBLE);
         if (contentValues == null || contentValues.length < 1) {
-            Toast.makeText(this, getString(R.string.unable_to_load), Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, getString(R.string.unable_to_load), Toast.LENGTH_SHORT).show();
             return;
         }
         switch (contentType) {
@@ -128,7 +133,6 @@ public class MovieDetail extends AppCompatActivity {
                 break;
             case NetworkUtils.REVIEWS:
                 mReviewsContent = contentValues;
-                // TODO: Improve the way reviews are displayed
                 mReviewTextView.setText("");
                 mReviewTextView.append(mReviewsContent[0].getAsString("content"));
                 break;
@@ -136,6 +140,11 @@ public class MovieDetail extends AppCompatActivity {
         mConstraintDetailsView.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Displays a movie trailer on youtube
+     *
+     * @param key The key that identifies the video ( used by Youtube)
+     */
     private void watchYoutubeVideo(String key) {
         String youtube_url = "https://www.youtube.com/watch?v=";
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + key));
@@ -155,23 +164,32 @@ public class MovieDetail extends AppCompatActivity {
     public void updateFavorites(View view) {
         if (view.getTag(R.id.action_favorite) == getString(R.string.present)) {
             removeFromFavorites();
+            updateFavoriteImageButton(getString(R.string.absent), R.drawable.watchribbon_absent);
             return;
         }
         addToFavorites();
+        updateFavoriteImageButton(getString(R.string.present), R.drawable.watchribbon_present);
+    }
+
+    /**
+     * Updates the favoriteImageButton properties.
+     *
+     * @param tag        A new TAG for the component
+     * @param resourceId The id of the image resource to be used by the component
+     */
+    private void updateFavoriteImageButton(String tag, int resourceId) {
+        mFavoriteImageButton.setTag(R.id.action_favorite, tag);
+        mFavoriteImageButton.setImageResource(resourceId);
     }
 
     private void removeFromFavorites() {
         new AsyncDbTasks(new DbTaskCompleteListener()
                 , mContext, null).execute(AsyncDbTasks.DELETE, mMovieId);
-        mFavoriteImageButton.setTag(R.id.action_favorite, getString(R.string.absent));
-        mFavoriteImageButton.setImageResource(R.drawable.watchribbon_absent);
     }
 
     private void addToFavorites() {
         new AsyncDbTasks(new DbTaskCompleteListener()
                 , mContext, mMovieContent).execute(AsyncDbTasks.INSERT);
-        mFavoriteImageButton.setTag(R.id.action_favorite, getString(R.string.present));
-        mFavoriteImageButton.setImageResource(R.drawable.watchribbon_present);
     }
 
     private class TaskCompleteListener implements QueryTaskCompleteListener<ContentValues[]> {

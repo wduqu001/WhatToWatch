@@ -89,7 +89,6 @@ public class MoviesContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         retCursor.setNotificationUri(mContentResolver, uri);
-        mDbHelper.close();
         return retCursor;
     }
 
@@ -110,19 +109,19 @@ public class MoviesContentProvider extends ContentProvider {
                     String selection = COLUMN_MOVIE_ID + "=?";
                     String[] selectionArgs = new String[]{values.getAsString(MoviesContract.MoviesEntry.COLUMN_MOVIE_ID)};
                     int rowsAffected = db.update(TABLE_NAME, values, selection, selectionArgs);
-                    if(rowsAffected < 1){
+                    if (rowsAffected < 1) {
                         return null;
                     }
                     returnUri = ContentUris.withAppendedId(CONTENT_URI, 1);
-                }catch (SQLiteConstraintException e){
-                    Log.d("MoviesContentProvider","Failed on insert operation. Is the content already on DB ? " + uri);
+                    mContentResolver.notifyChange(uri, null);
+                } catch (SQLiteConstraintException e) {
+                    Log.d("MoviesContentProvider", "Failed on insert operation. Is the content already on DB ? " + uri);
                 }
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
         db.close();
-        mContentResolver.notifyChange(uri, null);
         return returnUri;
     }
 
@@ -155,12 +154,12 @@ public class MoviesContentProvider extends ContentProvider {
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
         int moviesUpdated;
         int match = sUriMatcher.match(uri);
-
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
         switch (match) {
             case MOVIES_WITH_ID:
                 selection = selection == null ? COLUMN_MOVIE_ID + "=?" : selection;
                 selectionArgs = selectionArgs == null ? new String[]{uri.getPathSegments().get(1)} : selectionArgs;
-                moviesUpdated = mDbHelper.getWritableDatabase().update(TABLE_NAME, values, selection, selectionArgs );
+                moviesUpdated = db.update(TABLE_NAME, values, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -169,6 +168,7 @@ public class MoviesContentProvider extends ContentProvider {
         if (moviesUpdated != 0) {
             mContentResolver.notifyChange(uri, null);
         }
+        db.close();
         return moviesUpdated;
     }
 
