@@ -171,6 +171,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    protected void onResume() {
+        if (mOption.equals(getString(R.string.option_favorites))) {
+            loadMovieList();
+        }
+        super.onResume();
+    }
+
     private class TaskCompleteListener implements QueryTaskCompleteListener<ContentValues[]> {
         /**
          * Invoked when the AsyncTask has completed its execution.
