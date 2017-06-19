@@ -33,6 +33,7 @@ import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.C
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_OVERVIEW;
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_POSTER_PATH;
 import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_RELEASE_DATE;
+import static com.wduqu001.android.whattowatch.data.MoviesContract.MoviesEntry.COLUMN_TITLE;
 import static com.wduqu001.android.whattowatch.utilities.NetworkUtils.TMDB_IMG_URL;
 
 public class MovieDetail extends AppCompatActivity {
@@ -102,6 +103,7 @@ public class MovieDetail extends AppCompatActivity {
                 .into(mPosterImageView);
 
         mTitleTextView.setText(movieContent.getAsString(COLUMN_ORIGINAL_TITLE));
+        setTitle(movieContent.getAsString(COLUMN_TITLE));
         mOverviewTextView.setText(movieContent.getAsString(COLUMN_OVERVIEW));
         mRatingRatingBar.setRating((float) (movieContent.getAsDouble(COLUMN_AVERAGE_RANKING) / 2));
 
