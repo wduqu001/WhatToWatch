@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">WhatToWatch</string>
     <string name="error_message">An error has occurred. Check Your Connection and Try Again</string>
+    <string name="no_movie_was_found">No results found.
+        \n Have you selected any titles ?
+        \n\n If that\'s an error, please report it.</string>
     <string name="movie_poster" translatable="false">Movie poster</string>
     <string name="movie_thumbnail" translatable="false">Movie thumbnail</string>
     <string name="top_rated">Top Rated</string>

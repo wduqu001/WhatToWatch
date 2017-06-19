@@ -153,14 +153,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private void updateView(ContentValues[] contentValues) {
         showLoading(View.INVISIBLE);
+        UpdateTitle();
         if (contentValues == null || contentValues.length < 1) {
+            if (mOption.equals(getString(R.string.option_favorites))) {
+                mErrorMessageDisplay.setText(getString(R.string.no_movie_was_found));
+            }
             showErrorMessage();
             return;
         }
         mMovieListContent = contentValues;
         mMovieAdapter.setMovies(mMovieListContent);
         mMovieAdapter.notifyDataSetChanged();
-        UpdateTitle();
         showMovieDataView();
     }
 
