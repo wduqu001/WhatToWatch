@@ -1,5 +1,5 @@
 # WhatToWatch
-Created during the first and second projects in Udacity Android Developer Nanodegree.
+Created during the first and second projects in Udacity Android Developer Nanodegree.  
 The purpose of this app, is to help users discover popular and highly rated movies using the themoviedb.org web API. 
 
 <img src="https://www.themoviedb.org/assets/static_cache/bb45549239e25f1770d5f76727bcd7c0/images/v4/logos/408x161-powered-by-rectangle-blue.png" width="102" height="40" alt="Powered by TMDB">
