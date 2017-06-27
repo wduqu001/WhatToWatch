@@ -118,7 +118,7 @@ public class MovieDetail extends AppCompatActivity {
     }
 
     private void updateView(ContentValues[] contentValues, String contentType) {
-        showLoading(View.INVISIBLE);
+        showLoading(View.GONE);
         if (contentValues == null || contentValues.length < 1) {
             Toast.makeText(mContext, getString(R.string.unable_to_load), Toast.LENGTH_SHORT).show();
             return;
