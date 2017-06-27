@@ -46,19 +46,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 android:layout_marginEnd="64dp"
-                android:layout_marginRight="64dp"
-                android:layout_marginLeft="8dp"
                 app:layout_constraintLeft_toLeftOf="@+id/img_thumbnail"
                 app:layout_constraintHorizontal_bias="0.0"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="@dimen/marginDefault" />
 
             <ImageButton
                 android:id="@+id/action_favorite"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/marginDefault"
+                android:layout_marginTop="@dimen/marginDefault"
                 android:tag=""
-                android:layout_marginTop="8dp"
                 android:background="@android:color/transparent"
                 android:clickable="true"
                 android:contentDescription="@string/favorite_button"
@@ -70,28 +68,22 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="@dimen/marginDefault"
-                android:layout_marginTop="@dimen/marginDefault"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_thumbnail"
-                tools:text="Doctor Strange"
+                android:layout_margin="@dimen/marginDefault"
+                android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:layout_marginEnd="8dp"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/tv_yearOfRelease"
-                android:layout_marginRight="8dp"
-                app:layout_constraintHorizontal_bias="0.99" />
+                app:layout_constraintTop_toBottomOf="@+id/img_thumbnail"
+                tools:text="Doctor Strange" />
 
             <TextView
                 android:id="@+id/tv_yearOfRelease"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="@dimen/marginDefault"
-                android:layout_marginTop="@dimen/marginDefault"
+                android:layout_margin="@dimen/marginDefault"
                 android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                app:layout_constraintHorizontal_bias="0.6"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toLeftOf="@+id/rb_voteAverage"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_thumbnail"
@@ -124,8 +116,8 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintLeft_toRightOf="@+id/rb_voteAverage"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginLeft="8dp"
-                app:layout_constraintVertical_bias="0.491"
+                android:layout_marginStart="8dp"
+                app:layout_constraintVertical_bias="0.5"
                 app:layout_constraintTop_toTopOf="@+id/tv_yearOfRelease"
                 android:layout_marginTop="8dp" />
 
@@ -134,7 +126,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginDefault"
-                android:layout_marginTop="@dimen/marginDefault"
+                android:layout_marginTop="16dp"
                 android:text="@string/overview"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -155,6 +147,13 @@
                 app:layout_constraintVertical_bias="0.0"
                 tools:text="@string/sample_long_text" />
 
+            <FrameLayout style="@style/Divider"
+                android:id="@+id/horizontalDivider"
+                android:layout_margin="@dimen/marginDefault"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_overview"/>
+
             <TextView
                 android:id="@+id/tv_review_title"
                 android:layout_width="wrap_content"
@@ -163,7 +162,7 @@
                 android:text="@string/reviews"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body2"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_overview" />
+                app:layout_constraintTop_toBottomOf="@+id/horizontalDivider" />
 
             <TextView
                 android:id="@+id/tv_review"
